@@ -1,0 +1,28 @@
+No sé programar. Estamos organizando un mundial de fútbol entre inteligencias artificiales: cada IA escribe el "cerebro" de su equipo y los equipos juegan entre sí, 11 contra 11, en un simulador. Vas a competir contra otras IA. Escribe el cerebro de tu equipo para GANAR el torneo.
+
+Lo que tienes que entregar: un solo bloque de código JavaScript que defina la función decidir(estado). El simulador la llama 10 veces por segundo y tú devuelves una lista con 11 órdenes, una por jugador (la posición 0 de la lista es el arquero, la 10 es el último delantero).
+
+Lo que recibes en "estado":
+- estado.tiempo (segundos jugados), estado.duracion (360), estado.mitad (1 o 2; 3 en el tiempo extra de la final)
+- estado.marcador.propio y estado.marcador.rival
+- estado.balon = { x, y, z, vx, vy, vz } (z es la altura del balón en metros; 0 = en el piso)
+- estado.mios = lista de tus 11 jugadores: { n, x, y, vx, vy } (n va de 0 a 10; el 0 es el arquero)
+- estado.rivales = lista de los 11 rivales, con el mismo formato
+- estado.saque = "propio", "rival" o null (durante un saque el rival no puede acercarse a menos de 7 metros)
+- estado.cancha = { largo: 105, ancho: 68, arco: 7.32, areaX: 16.5, areaY: 40.32, alcance: 1.3, velJugador: 7.5, velPateo: 28, alturaArco: 2.44, alturaJugador: 2.4 }
+
+La cancha: mide 105 por 68 metros. TU arco siempre está en x = 0 y SIEMPRE atacas hacia x = 105 (el simulador voltea la cancha por ti, también en el segundo tiempo). El centro de cada arco está en y = 34 y mide 7,32 metros de ancho.
+
+Cada orden es un objeto: { ir: { x, y }, patear: { x, y, fuerza, altura } }
+- "ir": el punto hacia donde corre ese jugador (máximo 7,5 metros por segundo).
+- "patear" (opcional): si el balón está a menos de 1,3 metros del jugador, lo patea hacia ese punto. "fuerza" va de 0.05 a 1; con fuerza 1 el balón sale a 28 metros por segundo y se va frenando (recorre unos 45 metros). Más fuerza = menos puntería.
+- "altura" (opcional, de 0 a 1): con 0 el balón sale raso; con 1 sale hacia arriba a 12 metros por segundo (sube unos 7 metros y tarda unos 2,4 segundos en caer). Sirve para centros, pases largos y globos. En el aire el balón casi no se frena y pasa por encima de los jugadores; al caer, rebota.
+- Juego aéreo: un jugador alcanza el balón si está a 2,4 metros de altura o menos (el arquero, a 2,8 dentro de su área). Si lo patea cuando está a más de 1,3 metros de altura es un cabezazo (fuerza máxima 0.6); entre 0,4 y 1,3 metros es una volea, o una chilena si la fuerza pasa de 0.7. De cabeza, de volea y de chilena hay menos puntería.
+- Si un jugador toca el balón y NO le das "patear", lo baja, lo controla y lo lleva pegado al pie, pero corre un 15 % más lento que los demás.
+- El arquero (el 0) alcanza el balón a 2,2 metros dentro de su área y, si no le das "patear", lo detiene. Pero los tiros fuertes se le pueden escapar: si el balón le llega a 12 metros por segundo o menos lo alcanza siempre; más rápido puede fallar (hasta 4 de cada 10 veces cuando llega a 24 metros por segundo o más).
+
+Reglas del simulador: dos tiempos de 3 minutos. Es gol si el balón cruza la línea entre los palos y por debajo del travesaño (2,44 metros). No hay faltas, fuera de juego ni cansancio. Los jugadores no se atraviesan. Si el balón sale, saca el otro equipo (banda, arco o esquina). Después de un gol saca el equipo que lo recibió. Los equipos salen formados en 4-4-2. Si la final termina empatada hay un tiempo extra de 2 minutos con gol de oro (ahí estado.mitad vale 3 y estado.tiempo sigue contando después de 360).
+
+Condiciones: el código corre aislado, así que no puedes usar window, document, internet ni librerías; solo JavaScript normal y Math. Puedes guardar variables fuera de la función para recordar cosas entre llamadas. Si tu función falla o tarda más de 20 milisegundos, tus jugadores pierden ese turno.
+
+Dame: 1) un nombre para tu equipo, 2) tu táctica en una sola frase y 3) el código completo en un solo bloque, listo para copiar y pegar, sin que yo tenga que cambiar nada a mano.

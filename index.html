@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mundial entre las IA · MenteXYZ</title>
+<style>
+  :root{--fondo:#0b1220;--panel:#111a2e;--borde:#22304f;--texto:#e8eefc;--suave:#9fb0d0;--acento:#22d3c5;--boton:#1d4ed8}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fondo);color:var(--texto);font-family:"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+  main{max-width:920px;margin:0 auto;padding:28px 16px 60px}
+  h1{font-size:30px;margin:0 0 6px}h2{font-size:20px;margin:34px 0 10px;color:var(--acento)}
+  p{margin:8px 0}.suave{color:var(--suave)}a{color:var(--acento)}
+  .panel{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:16px}
+  .tabla{overflow-x:auto}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+  th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}th{color:var(--suave);font-weight:600}
+  .fila{display:flex;flex-wrap:wrap;gap:12px;align-items:end}label{display:block;font-size:14px;color:var(--suave)}
+  select,input,textarea,button{font:inherit;color:var(--texto);background:#0b1220;border:1px solid var(--borde);border-radius:7px;padding:8px 10px}
+  textarea{width:100%;min-height:200px;font-family:Consolas,Menlo,monospace;font-size:13px;margin-top:6px}
+  button{background:var(--boton);border-color:var(--boton);font-weight:700;cursor:pointer}
+  pre{white-space:pre-wrap;font-size:13px;max-height:320px;overflow:auto;margin:10px 0 0}
+  #error{color:#fca5a5;min-height:1.5em}
+</style>
+</head>
+<body>
+<main>
+  <h1>Mundial entre las IA</h1>
+  <p class="suave">El simulador del video de <a href="https://www.youtube.com/@MenteXYZ">MenteXYZ</a>: ChatGPT, Gemini, Claude y Grok
+  (versiones gratis) recibieron el mismo mensaje y cada una escribió el código que maneja a su equipo. Aquí están el
+  simulador, los cuatro códigos tal como los entregaron y la semilla de cada partido, para que cualquiera repita el torneo.</p>
+
+  <h2>Transparencia</h2>
+  <div class="panel">
+    <p>El simulador lo programamos nosotros con Claude Code, y el campeón fue Claude. El equipo de Claude lo escribió su
+    versión gratis en un chat sin memoria, que no conocía el simulador. La primera ronda se anuló porque nuestro arquero
+    era imbatible (tres empates a cero); se corrigió, se sumó el juego aéreo y se repitió todo con chats nuevos. Los códigos
+    de esa primera ronda están en la carpeta <code>ronda1</code>. Son partidos de seis minutos con reglas simples: esto
+    mide quién programó mejor este juego, y nada más.</p>
+  </div>
+
+  <h2>Resultados oficiales (24 de noviembre de 2026)</h2>
+  <div class="panel tabla"><table id="tabla"></table></div>
+  <div class="panel tabla" style="margin-top:12px"><table id="partidos"></table></div>
+  <p class="suave">Para repetirlos en tu equipo: <code>node torneo.js</code> (escribe los mismos marcadores en torneo.json).</p>
+
+  <h2>Pon a jugar a tu equipo</h2>
+  <div class="panel">
+    <p>1. Copia el mensaje. 2. Pégalo en la versión gratis de tu asistente. 3. Si responde sin código o el simulador da un
+    error, mándale el error tal cual y pide el código completo corregido. 4. Pega aquí el código y elige el rival.</p>
+    <p><button id="copiar" type="button">Copiar el mensaje</button> <span id="copiado" class="suave"></span></p>
+    <details><summary>Ver el mensaje completo</summary><pre id="mensaje"></pre></details>
+    <label style="margin-top:14px">El código de tu equipo (debe definir la función decidir(estado))
+      <textarea id="codigo" spellcheck="false"></textarea></label>
+    <div class="fila" style="margin-top:10px">
+      <label>Nombre de tu equipo<br><input id="nombre" maxlength="30" placeholder="Tu equipo"></label>
+      <label>Rival<br><select id="rival"></select></label>
+      <label>Semilla<br><input id="semilla" type="number" value="1" min="1" style="width:110px"></label>
+      <button id="jugar" type="button">Jugar</button>
+    </div>
+    <p id="error"></p>
+    <p class="suave">El código se guarda solo en tu navegador y corre en tu equipo; no se envía a ningún servidor.</p>
+  </div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const celda = (fila, texto, etiqueta) => { const c = document.createElement(etiqueta || "td"); c.textContent = texto; fila.appendChild(c); return c; };
+(async () => {
+  const equipos = await (await fetch("cerebros/equipos.json")).json();
+  const t = await (await fetch("torneo.json")).json();
+  const nombre = (id) => equipos[id].ia + " · " + equipos[id].nombre;
+  let f = $("tabla").insertRow();
+  ["", "Equipo", "Puntos", "G", "E", "P", "Goles"].forEach((x) => celda(f, x, "th"));
+  t.tabla.forEach((e, i) => { f = $("tabla").insertRow(); [i + 1, nombre(e.id), e.pts, e.g, e.e, e.p, e.gf + " – " + e.gc].forEach((x) => celda(f, x)); });
+  f = $("partidos").insertRow();
+  ["Semilla", "Local", "", "Visitante", ""].forEach((x) => celda(f, x, "th"));
+  t.partidos.concat([t.final]).forEach((p) => {
+    const [a, b] = p.resumen.equipos, final = p === t.final;
+    f = $("partidos").insertRow();
+    [p.semilla + (final ? " (final)" : ""), equipos[p.local].ia, a.goles + " – " + b.goles, equipos[p.visita].ia].forEach((x) => celda(f, x));
+    const enlace = document.createElement("a");
+    enlace.href = "partido.html?local=" + p.local + "&visita=" + p.visita + "&semilla=" + p.semilla + (final ? "&prorroga=120" : "");
+    enlace.textContent = "Ver el partido"; celda(f, "").appendChild(enlace);
+  });
+  Object.keys(equipos).forEach((id) => { const o = document.createElement("option"); o.value = id; o.textContent = nombre(id); $("rival").appendChild(o); });
+  $("mensaje").textContent = await (await fetch("mensaje.txt")).text();
+})();
+try { const m = JSON.parse(localStorage.getItem("mundial_mio") || "null"); if (m) { $("codigo").value = m.codigo || ""; $("nombre").value = m.nombre || ""; } } catch (e) {}
+$("copiar").onclick = async () => {
+  try { await navigator.clipboard.writeText($("mensaje").textContent); $("copiado").textContent = "Copiado."; }
+  catch (e) { $("copiado").textContent = "Ábrelo abajo y cópialo a mano."; }
+};
+$("jugar").onclick = () => {
+  const codigo = $("codigo").value.trim();
+  if (!/decidir/.test(codigo)) { $("error").textContent = "Pega primero el código: debe definir la función decidir(estado)."; return; }
+  try { localStorage.setItem("mundial_mio", JSON.stringify({ codigo, nombre: $("nombre").value.trim() })); }
+  catch (e) { $("error").textContent = "Tu navegador no dejó guardar el código (¿modo privado?)."; return; }
+  location.href = "partido.html?local=mio&visita=" + $("rival").value + "&semilla=" + (Number($("semilla").value) || 1);
+};
+</script>
+</body>
+</html>

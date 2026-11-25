@@ -1,0 +1,1640 @@
+{
+ "partidos": [
+  {
+   "local": "chatgpt",
+   "visita": "gemini",
+   "semilla": 1601,
+   "resumen": {
+    "semilla": 1601,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC – Los Algoritmos",
+      "goles": 0,
+      "tiros": 69,
+      "pases": 26,
+      "pateos": 168,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 46,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "vector105",
+      "goles": 4,
+      "tiros": 20,
+      "pases": 36,
+      "pateos": 151,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 54,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 27.016666666666413,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 6,
+      "propia": false,
+      "marcador": [
+       0,
+       1
+      ]
+     },
+     {
+      "t": 150.78333333334547,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       2
+      ]
+     },
+     {
+      "t": 299.4500000000563,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       3
+      ]
+     },
+     {
+      "t": 312.4166666667112,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       4
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "chatgpt",
+   "visita": "claude",
+   "semilla": 1602,
+   "resumen": {
+    "semilla": 1602,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC – Los Algoritmos",
+      "goles": 0,
+      "tiros": 70,
+      "pases": 6,
+      "pateos": 82,
+      "centros": 0,
+      "cabezazos": 1,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 34,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 14,
+      "tiros": 37,
+      "pases": 82,
+      "pateos": 155,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 66,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 32.34999999999945,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       1
+      ]
+     },
+     {
+      "t": 43.46666666666548,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       2
+      ]
+     },
+     {
+      "t": 66.2666666666642,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       3
+      ]
+     },
+     {
+      "t": 107.26666666666186,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       4
+      ]
+     },
+     {
+      "t": 122.66666666666099,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       5
+      ]
+     },
+     {
+      "t": 139.98333333333687,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       6
+      ]
+     },
+     {
+      "t": 171.38333333336186,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       7
+      ]
+     },
+     {
+      "t": 198.2666666667166,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       8
+      ]
+     },
+     {
+      "t": 236.3666666667469,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       9
+      ]
+     },
+     {
+      "t": 256.950000000095,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       10
+      ]
+     },
+     {
+      "t": 270.6833333334158,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       11
+      ]
+     },
+     {
+      "t": 300.3833333333888,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       12
+      ]
+     },
+     {
+      "t": 329.55000000002894,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       13
+      ]
+     },
+     {
+      "t": 339.9500000000195,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       14
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "chatgpt",
+   "visita": "grok",
+   "semilla": 1603,
+   "resumen": {
+    "semilla": 1603,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC – Los Algoritmos",
+      "goles": 0,
+      "tiros": 86,
+      "pases": 19,
+      "pateos": 217,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 1,
+      "chilenas": 0,
+      "posesion": 49,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Grok United",
+      "goles": 7,
+      "tiros": 24,
+      "pases": 29,
+      "pateos": 148,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 1,
+      "posesion": 51,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 26.649999999999768,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       1
+      ]
+     },
+     {
+      "t": 101.33333333332887,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       2
+      ]
+     },
+     {
+      "t": 123.0999999999943,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       3
+      ]
+     },
+     {
+      "t": 186.53333333337392,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       4
+      ]
+     },
+     {
+      "t": 263.8166666667554,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       5
+      ]
+     },
+     {
+      "t": 296.9166666667253,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       6
+      ]
+     },
+     {
+      "t": 317.7500000000397,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       7
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "gemini",
+   "visita": "claude",
+   "semilla": 1604,
+   "resumen": {
+    "semilla": 1604,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "vector105",
+      "goles": 5,
+      "tiros": 12,
+      "pases": 49,
+      "pateos": 115,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 49,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 1,
+      "tiros": 29,
+      "pases": 71,
+      "pateos": 143,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 51,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 47.28333333333193,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 62.93333333333104,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       1,
+       1
+      ]
+     },
+     {
+      "t": 178.7333333333677,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       1
+      ]
+     },
+     {
+      "t": 233.26666666674444,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       3,
+       1
+      ]
+     },
+     {
+      "t": 281.3166666667395,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       4,
+       1
+      ]
+     },
+     {
+      "t": 317.86666666670624,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       5,
+       1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "gemini",
+   "visita": "grok",
+   "semilla": 1605,
+   "resumen": {
+    "semilla": 1605,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "vector105",
+      "goles": 4,
+      "tiros": 19,
+      "pases": 50,
+      "pateos": 149,
+      "centros": 2,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 59,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Grok United",
+      "goles": 0,
+      "tiros": 48,
+      "pases": 41,
+      "pateos": 136,
+      "centros": 1,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 2,
+      "posesion": 41,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 72.93333333333048,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 115.54999999999472,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 205.066666666722,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       3,
+       0
+      ]
+     },
+     {
+      "t": 254.7166666667615,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       4,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "claude",
+   "visita": "grok",
+   "semilla": 1606,
+   "resumen": {
+    "semilla": 1606,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 5,
+      "tiros": 15,
+      "pases": 93,
+      "pateos": 167,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 64,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Grok United",
+      "goles": 1,
+      "tiros": 16,
+      "pases": 14,
+      "pateos": 90,
+      "centros": 0,
+      "cabezazos": 2,
+      "voleas": 3,
+      "chilenas": 3,
+      "posesion": 36,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 42.399999999998876,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 89.39999999999621,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 121.01666666666108,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       3,
+       0
+      ]
+     },
+     {
+      "t": 207.8166666667242,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       4,
+       0
+      ]
+     },
+     {
+      "t": 242.83333333341872,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       5,
+       0
+      ]
+     },
+     {
+      "t": 307.7666666667154,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       5,
+       1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "gemini",
+   "visita": "chatgpt",
+   "semilla": 1607,
+   "resumen": {
+    "semilla": 1607,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "vector105",
+      "goles": 5,
+      "tiros": 16,
+      "pases": 36,
+      "pateos": 136,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 55,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "NeuroFC – Los Algoritmos",
+      "goles": 1,
+      "tiros": 61,
+      "pases": 23,
+      "pateos": 169,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 45,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 41.14999999999895,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 7,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 66.1166666666642,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 6,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 98.3499999999957,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       1
+      ]
+     },
+     {
+      "t": 192.90000000004565,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       3,
+       1
+      ]
+     },
+     {
+      "t": 208.26666666672455,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 7,
+      "propia": false,
+      "marcador": [
+       4,
+       1
+      ]
+     },
+     {
+      "t": 284.7166666667364,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       5,
+       1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "claude",
+   "visita": "chatgpt",
+   "semilla": 1608,
+   "resumen": {
+    "semilla": 1608,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 14,
+      "tiros": 38,
+      "pases": 73,
+      "pateos": 154,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 64,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "NeuroFC – Los Algoritmos",
+      "goles": 0,
+      "tiros": 72,
+      "pases": 6,
+      "pateos": 93,
+      "centros": 0,
+      "cabezazos": 2,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 36,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 16.383333333333685,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 26.783333333333093,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 40.93333333333229,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       3,
+       0
+      ]
+     },
+     {
+      "t": 66.56666666666418,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       4,
+       0
+      ]
+     },
+     {
+      "t": 77.54999999999688,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       5,
+       0
+      ]
+     },
+     {
+      "t": 110.76666666666166,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       6,
+       0
+      ]
+     },
+     {
+      "t": 160.43333333335315,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       7,
+       0
+      ]
+     },
+     {
+      "t": 191.7000000000447,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       8,
+       0
+      ]
+     },
+     {
+      "t": 209.43333333339214,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       9,
+       0
+      ]
+     },
+     {
+      "t": 219.91666666673382,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       10,
+       0
+      ]
+     },
+     {
+      "t": 256.4666666667621,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       11,
+       0
+      ]
+     },
+     {
+      "t": 303.100000000053,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       12,
+       0
+      ]
+     },
+     {
+      "t": 324.5833333333668,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       13,
+       0
+      ]
+     },
+     {
+      "t": 334.95000000002403,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       14,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "grok",
+   "visita": "chatgpt",
+   "semilla": 1609,
+   "resumen": {
+    "semilla": 1609,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Grok United",
+      "goles": 10,
+      "tiros": 51,
+      "pases": 33,
+      "pateos": 203,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 1,
+      "posesion": 51,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "NeuroFC – Los Algoritmos",
+      "goles": 0,
+      "tiros": 93,
+      "pases": 13,
+      "pateos": 233,
+      "centros": 0,
+      "cabezazos": 1,
+      "voleas": 1,
+      "chilenas": 0,
+      "posesion": 49,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 99.88333333332895,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 133.68333333333186,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 160.33333333335307,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       3,
+       0
+      ]
+     },
+     {
+      "t": 178.01666666670047,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 8,
+      "propia": false,
+      "marcador": [
+       4,
+       0
+      ]
+     },
+     {
+      "t": 194.06666666671325,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 8,
+      "propia": false,
+      "marcador": [
+       5,
+       0
+      ]
+     },
+     {
+      "t": 215.40000000006356,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       6,
+       0
+      ]
+     },
+     {
+      "t": 236.41666666674695,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       7,
+       0
+      ]
+     },
+     {
+      "t": 282.76666666673816,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       8,
+       0
+      ]
+     },
+     {
+      "t": 307.93333333338194,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       9,
+       0
+      ]
+     },
+     {
+      "t": 344.46666666668204,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       10,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "claude",
+   "visita": "gemini",
+   "semilla": 1610,
+   "resumen": {
+    "semilla": 1610,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 3,
+      "tiros": 32,
+      "pases": 67,
+      "pateos": 131,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 54,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "vector105",
+      "goles": 0,
+      "tiros": 4,
+      "pases": 44,
+      "pateos": 96,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 46,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 21.883333333333372,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 75.68333333333032,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 127.39999999999405,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 7,
+      "propia": false,
+      "marcador": [
+       3,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "grok",
+   "visita": "gemini",
+   "semilla": 1611,
+   "resumen": {
+    "semilla": 1611,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Grok United",
+      "goles": 3,
+      "tiros": 37,
+      "pases": 38,
+      "pateos": 117,
+      "centros": 2,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 44,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "vector105",
+      "goles": 3,
+      "tiros": 13,
+      "pases": 47,
+      "pateos": 125,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 56,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 13.000000000000226,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 189.26666666670943,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 209.28333333339202,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       1
+      ]
+     },
+     {
+      "t": 246.13333333342135,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       2
+      ]
+     },
+     {
+      "t": 262.93333333342287,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       2,
+       3
+      ]
+     },
+     {
+      "t": 341.0833333333518,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       3,
+       3
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "grok",
+   "visita": "claude",
+   "semilla": 1612,
+   "resumen": {
+    "semilla": 1612,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Grok United",
+      "goles": 2,
+      "tiros": 17,
+      "pases": 17,
+      "pateos": 92,
+      "centros": 0,
+      "cabezazos": 3,
+      "voleas": 1,
+      "chilenas": 0,
+      "posesion": 42,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 6,
+      "tiros": 19,
+      "pases": 71,
+      "pateos": 148,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 58,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 44.44999999999876,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       1
+      ]
+     },
+     {
+      "t": 54.13333333333154,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       2
+      ]
+     },
+     {
+      "t": 85.01666666666313,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       3
+      ]
+     },
+     {
+      "t": 113.86666666666149,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       1,
+       3
+      ]
+     },
+     {
+      "t": 132.21666666666403,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       1,
+       4
+      ]
+     },
+     {
+      "t": 215.05000000006328,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       2,
+       4
+      ]
+     },
+     {
+      "t": 231.3833333334096,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       2,
+       5
+      ]
+     },
+     {
+      "t": 311.60000000004527,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       2,
+       6
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "tabla": [
+  {
+   "id": "claude",
+   "pj": 6,
+   "g": 5,
+   "e": 0,
+   "p": 1,
+   "gf": 43,
+   "gc": 8,
+   "pts": 15
+  },
+  {
+   "id": "gemini",
+   "pj": 6,
+   "g": 4,
+   "e": 1,
+   "p": 1,
+   "gf": 21,
+   "gc": 8,
+   "pts": 13
+  },
+  {
+   "id": "grok",
+   "pj": 6,
+   "g": 2,
+   "e": 1,
+   "p": 3,
+   "gf": 23,
+   "gc": 18,
+   "pts": 7
+  },
+  {
+   "id": "chatgpt",
+   "pj": 6,
+   "g": 0,
+   "e": 0,
+   "p": 6,
+   "gf": 1,
+   "gc": 54,
+   "pts": 0
+  }
+ ],
+ "final": {
+  "local": "claude",
+  "visita": "gemini",
+  "semilla": 1616,
+  "resumen": {
+   "semilla": 1616,
+   "prorroga": false,
+   "equipos": [
+    {
+     "nombre": "Cafeteros FC",
+     "goles": 4,
+     "tiros": 33,
+     "pases": 80,
+     "pateos": 146,
+     "centros": 0,
+     "cabezazos": 0,
+     "voleas": 0,
+     "chilenas": 0,
+     "posesion": 56,
+     "fallos": 0,
+     "lentos": 0,
+     "error": ""
+    },
+    {
+     "nombre": "vector105",
+     "goles": 2,
+     "tiros": 10,
+     "pases": 38,
+     "pateos": 98,
+     "centros": 0,
+     "cabezazos": 1,
+     "voleas": 0,
+     "chilenas": 0,
+     "posesion": 44,
+     "fallos": 0,
+     "lentos": 0,
+     "error": ""
+    }
+   ],
+   "goles": [
+    {
+     "t": 70.44999999999729,
+     "tipo": "gol",
+     "equipo": 0,
+     "n": 9,
+     "propia": false,
+     "marcador": [
+      1,
+      0
+     ]
+    },
+    {
+     "t": 120.31666666666112,
+     "tipo": "gol",
+     "equipo": 1,
+     "n": 9,
+     "propia": false,
+     "marcador": [
+      1,
+      1
+     ]
+    },
+    {
+     "t": 191.96666666671157,
+     "tipo": "gol",
+     "equipo": 0,
+     "n": 9,
+     "propia": false,
+     "marcador": [
+      2,
+      1
+     ]
+    },
+    {
+     "t": 203.53333333338745,
+     "tipo": "gol",
+     "equipo": 0,
+     "n": 9,
+     "propia": false,
+     "marcador": [
+      3,
+      1
+     ]
+    },
+    {
+     "t": 239.41666666674934,
+     "tipo": "gol",
+     "equipo": 1,
+     "n": 9,
+     "propia": false,
+     "marcador": [
+      3,
+      2
+     ]
+    },
+    {
+     "t": 262.15000000009024,
+     "tipo": "gol",
+     "equipo": 0,
+     "n": 10,
+     "propia": false,
+     "marcador": [
+      4,
+      2
+     ]
+    }
+   ]
+  }
+ },
+ "campeon": "claude"
+}

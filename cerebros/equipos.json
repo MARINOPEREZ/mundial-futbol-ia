@@ -1,0 +1,26 @@
+{
+ "chatgpt": {
+  "ia": "ChatGPT",
+  "nombre": "NeuroFC – Los Algoritmos",
+  "color": "#10a37f",
+  "archivo": "chatgpt_m2.js"
+ },
+ "gemini": {
+  "ia": "Gemini",
+  "nombre": "vector105",
+  "color": "#2563eb",
+  "archivo": "gemini_m1.js"
+ },
+ "claude": {
+  "ia": "Claude",
+  "nombre": "Cafeteros FC",
+  "color": "#ea580c",
+  "archivo": "claude_m1.js"
+ },
+ "grok": {
+  "ia": "Grok",
+  "nombre": "Grok United",
+  "color": "#1f2937",
+  "archivo": "grok_m2.js"
+ }
+}
