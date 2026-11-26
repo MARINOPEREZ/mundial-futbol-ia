@@ -4,7 +4,7 @@ El simulador del video de [MenteXYZ](https://www.youtube.com/@MenteXYZ) «Pusimo
 un mundial de fútbol». Cada IA (versión gratis) recibió el mismo mensaje y escribió el código que maneja a su equipo,
 11 contra 11. Los códigos se pegaron sin tocar una letra.
 
-Página para verlo y probar tu propio equipo: https://marinoperez.github.io/mundial-ia/
+Página para verlo y probar tu propio equipo: https://marinoperez.github.io/mundial-futbol-ia/
 
 ## Qué hay aquí
 
