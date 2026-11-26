@@ -44,3 +44,8 @@ Con las mismas semillas salen los mismos marcadores.
 | 4 | ChatGPT · NeuroFC – Los Algoritmos | 0 | 1 – 54 |
 
 Final: Claude 4 – 2 Gemini.
+
+## Licencia
+
+MIT (ver `LICENSE`): puedes usar, copiar y modificar el simulador citando a MenteXYZ. Los archivos de `cerebros/` y
+`ronda1/` son las respuestas de cada asistente (ChatGPT, Gemini, Claude y Grok), publicadas tal como las entregaron.
