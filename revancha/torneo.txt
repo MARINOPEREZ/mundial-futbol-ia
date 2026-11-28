@@ -1,0 +1,48 @@
+PARTE 1 · ¿APRENDIÓ? (versión nueva contra versión vieja)
+semilla 1841: NeuroFC – Los Algoritmos 0 - 4 NeuroFC (antes) | tiros 0/212 · pases 0/5 · posesión 87/13 % · fallos 3600/0 · lentos 0/0 · error local: retro is not defined
+semilla 1842: NeuroFC (antes) 4 - 0 NeuroFC – Los Algoritmos | tiros 200/0 · pases 5/0 · posesión 13/87 % · fallos 0/3600 · lentos 0/0 · error visitante: retro is not defined
+semilla 1843: vector105 1 - 0 vector105 (antes) | tiros 11/8 · pases 22/27 · posesión 47/53 % · fallos 0/0 · lentos 0/0
+semilla 1844: vector105 (antes) 0 - 0 vector105 | tiros 12/6 · pases 24/19 · posesión 49/51 % · fallos 0/0 · lentos 0/0
+semilla 1845: Cafeteros FC 1 - 1 Cafeteros (antes) | tiros 3/7 · pases 65/38 · posesión 53/47 % · fallos 0/0 · lentos 0/0
+semilla 1846: Cafeteros (antes) 1 - 0 Cafeteros FC | tiros 9/9 · pases 63/64 · posesión 51/49 % · fallos 0/0 · lentos 0/0
+semilla 1847: Grok United 4 - 6 Grok United (antes) | tiros 26/19 · pases 42/51 · posesión 48/52 % · fallos 0/0 · lentos 0/0
+semilla 1848: Grok United (antes) 9 - 4 Grok United | tiros 23/21 · pases 41/41 · posesión 53/47 % · fallos 0/0 · lentos 0/0
+
+PARTE 2 · TODOS CONTRA TODOS
+semilla 1801: NeuroFC – Los Algoritmos 0 - 1 vector105 | tiros 0/1 · pases 0/0 · posesión 93/7 % · fallos 3600/0 · lentos 0/0 · error local: retro is not defined
+semilla 1802: Cafeteros FC 1 - 0 NeuroFC – Los Algoritmos | tiros 6/0 · pases 2/0 · posesión 6/94 % · fallos 0/3600 · lentos 0/0 · error visitante: retro is not defined
+semilla 1803: NeuroFC – Los Algoritmos 0 - 18 Grok United | tiros 0/48 · pases 0/222 · posesión 64/36 % · fallos 3600/0 · lentos 0/0 · error local: retro is not defined
+semilla 1804: Neural Press FC 1 - 0 NeuroFC – Los Algoritmos | tiros 2/0 · pases 4/0 · posesión 6/94 % · fallos 0/3600 · lentos 0/0 · error visitante: retro is not defined
+semilla 1805: NeuroFC – Los Algoritmos 0 - 1 Quantum FC | tiros 0/905 · pases 0/0 · posesión 94/6 % · fallos 3600/0 · lentos 0/0 · error local: retro is not defined
+semilla 1806: Cafeteros FC 1 - 4 vector105 | tiros 25/13 · pases 62/69 · posesión 50/50 % · fallos 0/0 · lentos 0/0
+semilla 1807: vector105 2 - 2 Grok United | tiros 8/33 · pases 45/43 · posesión 58/42 % · fallos 0/0 · lentos 0/0
+semilla 1808: Neural Press FC 1 - 10 vector105 | tiros 9/29 · pases 6/55 · posesión 29/71 % · fallos 0/0 · lentos 0/0
+semilla 1809: vector105 5 - 2 Quantum FC | tiros 9/26 · pases 60/9 · posesión 75/25 % · fallos 0/0 · lentos 0/0
+semilla 1810: Grok United 1 - 7 Cafeteros FC | tiros 24/18 · pases 40/83 · posesión 37/63 % · fallos 0/0 · lentos 0/0
+semilla 1811: Cafeteros FC 6 - 0 Neural Press FC | tiros 40/9 · pases 74/3 · posesión 63/37 % · fallos 0/0 · lentos 0/0
+semilla 1812: Quantum FC 4 - 10 Cafeteros FC | tiros 33/35 · pases 23/68 · posesión 37/63 % · fallos 0/0 · lentos 0/0
+semilla 1813: Grok United 1 - 2 Neural Press FC | tiros 9/5 · pases 30/8 · posesión 57/43 % · fallos 0/0 · lentos 0/0
+semilla 1814: Quantum FC 13 - 4 Grok United | tiros 41/27 · pases 30/32 · posesión 50/50 % · fallos 0/0 · lentos 0/0
+semilla 1815: Neural Press FC 6 - 6 Quantum FC | tiros 13/52 · pases 25/29 · posesión 51/49 % · fallos 0/0 · lentos 0/0
+
+TABLA
+1. vector105 (Gemini) · 13 pts · 4G 1E 0P · goles 22-6
+2. Cafeteros FC (Claude) · 12 pts · 4G 0E 1P · goles 25-9
+3. Quantum FC (Qwen) · 7 pts · 2G 1E 2P · goles 26-25
+4. Neural Press FC (Copilot) · 7 pts · 2G 1E 2P · goles 10-23
+5. Grok United (Grok) · 4 pts · 1G 1E 3P · goles 26-24
+6. NeuroFC – Los Algoritmos (ChatGPT) · 0 pts · 0G 0E 5P · goles 0-22
+
+SEMIFINAL 1
+semilla 1821: vector105 8 - 1 Neural Press FC | tiros 23/11 · pases 49/12 · posesión 70/30 % · fallos 0/0 · lentos 0/0
+Pasa: vector105 (Gemini)
+
+SEMIFINAL 2
+semilla 1822: Cafeteros FC 10 - 2 Quantum FC | tiros 37/25 · pases 75/22 · posesión 65/35 % · fallos 0/0 · lentos 0/0
+Pasa: Cafeteros FC (Claude)
+
+FINAL
+semilla 1830: vector105 1 - 0 Cafeteros FC | tiros 11/30 · pases 67/69 · posesión 51/49 % · fallos 0/0 · lentos 0/0
+Pasa: vector105 (Gemini)
+
+CAMPEÓN: vector105 (Gemini)

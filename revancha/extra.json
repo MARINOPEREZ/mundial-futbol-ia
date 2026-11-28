@@ -1,0 +1,327 @@
+{
+ "partidos": [
+  {
+   "local": "chatgpt_extra",
+   "visita": "chatgpt_v16",
+   "semilla": 1851,
+   "resumen": {
+    "semilla": 1851,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC (extra)",
+      "goles": 0,
+      "tiros": 1,
+      "pases": 22,
+      "pateos": 185,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 52,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "NeuroFC (antes)",
+      "goles": 0,
+      "tiros": 67,
+      "pases": 32,
+      "pateos": 219,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 48,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": []
+   }
+  },
+  {
+   "local": "chatgpt_v16",
+   "visita": "chatgpt_extra",
+   "semilla": 1852,
+   "resumen": {
+    "semilla": 1852,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC (antes)",
+      "goles": 0,
+      "tiros": 76,
+      "pases": 32,
+      "pateos": 197,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 46,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "NeuroFC (extra)",
+      "goles": 0,
+      "tiros": 2,
+      "pases": 13,
+      "pateos": 192,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 54,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": []
+   }
+  },
+  {
+   "local": "chatgpt_extra",
+   "visita": "gemini",
+   "semilla": 1853,
+   "resumen": {
+    "semilla": 1853,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC (extra)",
+      "goles": 0,
+      "tiros": 9,
+      "pases": 11,
+      "pateos": 317,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 37,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "vector105",
+      "goles": 4,
+      "tiros": 10,
+      "pases": 26,
+      "pateos": 351,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 63,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 32.783333333332756,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       1
+      ]
+     },
+     {
+      "t": 65.39999999999758,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       2
+      ]
+     },
+     {
+      "t": 228.00000000007358,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       3
+      ]
+     },
+     {
+      "t": 280.1833333334072,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       0,
+       4
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "claude",
+   "visita": "chatgpt_extra",
+   "semilla": 1854,
+   "resumen": {
+    "semilla": 1854,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "Cafeteros FC",
+      "goles": 5,
+      "tiros": 37,
+      "pases": 80,
+      "pateos": 172,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 59,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "NeuroFC (extra)",
+      "goles": 0,
+      "tiros": 9,
+      "pases": 8,
+      "pateos": 103,
+      "centros": 0,
+      "cabezazos": 1,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 41,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 22.450000000000006,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       1,
+       0
+      ]
+     },
+     {
+      "t": 77.21666666666357,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       2,
+       0
+      ]
+     },
+     {
+      "t": 284.5500000000699,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       3,
+       0
+      ]
+     },
+     {
+      "t": 309.0833333333809,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 10,
+      "propia": false,
+      "marcador": [
+       4,
+       0
+      ]
+     },
+     {
+      "t": 346.93333333334647,
+      "tipo": "gol",
+      "equipo": 0,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       5,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "local": "chatgpt_extra",
+   "visita": "grok",
+   "semilla": 1855,
+   "resumen": {
+    "semilla": 1855,
+    "prorroga": false,
+    "equipos": [
+     {
+      "nombre": "NeuroFC (extra)",
+      "goles": 0,
+      "tiros": 5,
+      "pases": 36,
+      "pateos": 170,
+      "centros": 0,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 0,
+      "posesion": 55,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     },
+     {
+      "nombre": "Grok United",
+      "goles": 1,
+      "tiros": 43,
+      "pases": 50,
+      "pateos": 163,
+      "centros": 3,
+      "cabezazos": 0,
+      "voleas": 0,
+      "chilenas": 1,
+      "posesion": 45,
+      "fallos": 0,
+      "lentos": 0,
+      "error": ""
+     }
+    ],
+    "goles": [
+     {
+      "t": 152.36666666668006,
+      "tipo": "gol",
+      "equipo": 1,
+      "n": 9,
+      "propia": false,
+      "marcador": [
+       0,
+       1
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La revancha del mundial de las IA · MenteXYZ</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b1220;overflow:hidden;font-family:"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+  canvas{display:block}
+  #marcador{position:fixed;top:22px;left:28px;display:flex;align-items:stretch;font-weight:700;font-size:22px;
+    box-shadow:0 6px 22px rgba(0,0,0,.45);border-radius:6px;overflow:hidden;letter-spacing:.3px}
+  #marcador div{padding:8px 14px;display:flex;align-items:center}
+  .eq{background:#101827;min-width:150px}.eq i{width:10px;height:26px;margin-right:10px;border-radius:2px;display:inline-block}
+  .gol{background:#fff;color:#101827;font-size:26px;min-width:28px;justify-content:center}
+  #reloj{background:#1d4ed8;font-variant-numeric:tabular-nums}
+  #aviso{position:fixed;left:0;right:0;top:36%;text-align:center;font-size:92px;font-weight:900;letter-spacing:4px;
+    text-shadow:0 6px 30px rgba(0,0,0,.7);opacity:0;transition:opacity .25s;pointer-events:none}
+  #aviso small{display:block;font-size:30px;letter-spacing:1px;font-weight:600;margin-top:6px}
+  #pie{position:fixed;left:28px;bottom:20px;font-size:15px;opacity:.85;text-shadow:0 2px 6px #000}
+  #rep{position:fixed;right:28px;top:22px;background:#dc2626;padding:6px 14px;border-radius:5px;font-weight:800;display:none}
+  #jugada{position:fixed;left:0;right:0;bottom:64px;text-align:center;font-size:34px;font-weight:900;letter-spacing:2px;text-shadow:0 4px 18px rgba(0,0,0,.8);opacity:0;transition:opacity .2s;pointer-events:none}
+  #datos{position:fixed;right:28px;bottom:20px;font-size:14px;text-align:right;opacity:.9;text-shadow:0 2px 6px #000;white-space:pre}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+<div id="marcador">
+  <div class="eq"><i id="c0"></i><span id="n0"></span></div><div class="gol" id="g0">0</div>
+  <div class="gol" id="g1">0</div><div class="eq"><i id="c1"></i><span id="n1"></span></div>
+  <div id="reloj">00:00</div>
+</div>
+<div id="rep">REPETICIÓN</div>
+<div id="aviso"></div>
+<div id="jugada"></div>
+<div id="pie"></div>
+<div id="datos"></div>
+<script src="motor.js"></script>
+<script type="module">
+import * as THREE from "three";
+
+// ?local=chatgpt&visita=claude&semilla=1601&vel=1   (los cerebros están en cerebros/<nombre>.js, tal como los dio cada IA)
+const q = new URLSearchParams(location.search);
+const EQUIPOS = await (await fetch("cerebros/equipos.json")).json();
+const idL = q.get("local") || Object.keys(EQUIPOS)[0], idV = q.get("visita") || Object.keys(EQUIPOS)[1];
+const semilla = Number(q.get("semilla") || 1), VEL = Number(q.get("vel") || 1), SIN_REP = q.has("sinrep"), PRORROGA = Number(q.get("prorroga") || 0), ESCALA = Number(q.get("escala") || 1.25);
+// «mio» = el equipo que pegaste en la página de inicio (se guarda solo en tu navegador)
+let MIO = null; try { MIO = JSON.parse(localStorage.getItem("mundial_mio") || "null"); } catch (e) {}
+const cargar = async (id) => id === "mio" && MIO ? { ia: "Tu equipo", nombre: MIO.nombre || "Tu equipo", color: "#a855f7", codigo: MIO.codigo }
+  : Object.assign({ codigo: await (await fetch("cerebros/" + EQUIPOS[id].archivo)).text() }, EQUIPOS[id]);
+const local = await cargar(idL), visita = await cargar(idV);
+// reloj fijo: en el torneo oficial (Node) ningún equipo tuvo turnos lentos; aquí el equipo está ocupado dibujando o
+// grabando, y un turno «lento» por culpa nuestra cambiaría el partido. Así la transmisión repite el resultado oficial.
+const P = new Mundial.Partido(local, visita, { semilla, prorroga: PRORROGA, reloj: () => 0 });
+const C = Mundial.C;
+window.partido = P;
+
+const $ = (id) => document.getElementById(id);
+$("n0").textContent = local.nombre; $("n1").textContent = visita.nombre;
+$("c0").style.background = local.color; $("c1").style.background = visita.color;
+$("pie").textContent = `${local.ia} vs ${visita.ia} · semilla ${semilla} · el código de cada equipo lo escribió la IA, sin retoques`;
+
+// ---------- Escena ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+const escena = new THREE.Scene();
+const camara = new THREE.PerspectiveCamera(28, 16 / 9, 1, 900);
+
+function lienzo(w, h, pintar) { const c = document.createElement("canvas"); c.width = w; c.height = h; pintar(c.getContext("2d"), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; }
+async function textura(ruta, respaldo) {          // imagen propia si existe (texturas/…), si no, la dibujada por código
+  try { const r = await fetch(ruta, { method: "HEAD" }); if (!r.ok) throw 0;
+    const t = await new THREE.TextureLoader().loadAsync(ruta); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; }
+  catch (e) { return respaldo(); }
+}
+
+// Cielo
+const cielo = await textura("texturas/cielo.jpg", () => lienzo(16, 512, (g, w, h) => { const d = g.createLinearGradient(0, 0, 0, h);
+  d.addColorStop(0, "#2f6fc4"); d.addColorStop(.55, "#8fc1ee"); d.addColorStop(1, "#dcecf8"); g.fillStyle = d; g.fillRect(0, 0, w, h); }));
+escena.add(new THREE.Mesh(new THREE.SphereGeometry(600, 32, 16), new THREE.MeshBasicMaterial({ map: cielo, side: THREE.BackSide, fog: false })));
+escena.fog = new THREE.Fog(0xcfe3f5, 260, 720);
+
+// Luz de tarde con sombras
+escena.add(new THREE.HemisphereLight(0xdfeeff, 0x3a5a2a, 0.85));
+const sol = new THREE.DirectionalLight(0xfff1d6, 2.3);
+sol.position.set(-70, 95, 60); sol.castShadow = true; sol.shadow.mapSize.set(4096, 4096);
+Object.assign(sol.shadow.camera, { left: -75, right: 75, top: 55, bottom: -55, near: 10, far: 300 }); sol.shadow.bias = -0.0004;
+escena.add(sol);
+
+// Césped con franjas y líneas
+const PX = 20;                                       // píxeles por metro
+const margen = 8;
+const cesped = lienzo((C.LARGO + 2 * margen) * PX, (C.ANCHO + 2 * margen) * PX, (g, w, h) => {
+  for (let i = 0; i < 26; i++) { g.fillStyle = i % 2 ? "#3f8f3a" : "#48a043"; g.fillRect(i * w / 26, 0, w / 26 + 1, h); }
+  const im = g.getImageData(0, 0, w, h), d = im.data;                // grano del pasto
+  for (let i = 0; i < d.length; i += 4) { const r = (Math.random() - .5) * 22; d[i] += r * .6; d[i + 1] += r; d[i + 2] += r * .5; }
+  g.putImageData(im, 0, 0);
+  g.translate(margen * PX, margen * PX); g.strokeStyle = "rgba(255,255,255,.93)"; g.lineWidth = 0.14 * PX; g.lineCap = "square";
+  const L = C.LARGO * PX, A = C.ANCHO * PX, m = (v) => v * PX;
+  g.strokeRect(0, 0, L, A); g.beginPath(); g.moveTo(L / 2, 0); g.lineTo(L / 2, A); g.stroke();
+  g.beginPath(); g.arc(L / 2, A / 2, m(9.15), 0, 7); g.stroke();
+  g.fillStyle = "#fff"; g.beginPath(); g.arc(L / 2, A / 2, m(.25), 0, 7); g.fill();
+  for (const s of [0, 1]) { g.save(); if (s) { g.translate(L, A); g.rotate(Math.PI); }
+    g.strokeRect(0, A / 2 - m(20.16), m(16.5), m(40.32)); g.strokeRect(0, A / 2 - m(9.16), m(5.5), m(18.32));
+    g.beginPath(); g.arc(m(11), A / 2, m(.25), 0, 7); g.fill();
+    g.beginPath(); g.arc(m(11), A / 2, m(9.15), -0.925, 0.925); g.stroke();
+    g.beginPath(); g.arc(0, 0, m(1), 0, Math.PI / 2); g.stroke(); g.beginPath(); g.arc(0, A, m(1), -Math.PI / 2, 0); g.stroke(); g.restore(); }
+});
+const piso = new THREE.Mesh(new THREE.PlaneGeometry(C.LARGO + 2 * margen, C.ANCHO + 2 * margen),
+  new THREE.MeshStandardMaterial({ map: cesped, roughness: .95 }));
+piso.rotation.x = -Math.PI / 2; piso.receiveShadow = true; escena.add(piso);
+const pista = new THREE.Mesh(new THREE.PlaneGeometry(260, 220), new THREE.MeshStandardMaterial({ color: 0x7a3b2e, roughness: 1 }));
+pista.rotation.x = -Math.PI / 2; pista.position.y = -0.05; pista.receiveShadow = true; escena.add(pista);
+
+// Tribunas con público, vallas y techo
+const publico = await textura("texturas/publico.jpg", () => lienzo(1024, 512, (g, w, h) => {
+  g.fillStyle = "#1c2433"; g.fillRect(0, 0, w, h);
+  const col = ["#e11d48", "#f8fafc", "#1d4ed8", "#facc15", "#0f172a", "#22c55e", "#f97316", "#e2e8f0", "#94a3b8"];
+  for (let y = 6; y < h; y += 9) for (let x = (y % 18 ? 3 : 7); x < w; x += 8) { if (Math.random() < .08) continue;
+    g.fillStyle = col[Math.floor(Math.random() * col.length)]; g.fillRect(x, y + 3, 5, 5);
+    g.fillStyle = ["#e8b98f", "#c68b5c", "#8a5a3a", "#f1cda8"][Math.floor(Math.random() * 4)]; g.fillRect(x + 1, y, 3, 3); } }));
+publico.wrapS = publico.wrapT = THREE.RepeatWrapping;
+function tribuna(ancho, x, z, giro) {
+  const g = new THREE.Group(); const alto = 26, fondo = 30;
+  const t = publico.clone(); t.needsUpdate = true; t.repeat.set(ancho / 40, 1.6);
+  const grada = new THREE.Mesh(new THREE.PlaneGeometry(ancho, Math.hypot(alto, fondo)), new THREE.MeshStandardMaterial({ map: t, roughness: 1 }));
+  grada.rotation.x = -Math.atan2(fondo, alto); grada.position.set(0, alto / 2 + 2.5, -fondo / 2); g.add(grada);
+  const muro = new THREE.Mesh(new THREE.BoxGeometry(ancho, 2.5, 1), new THREE.MeshStandardMaterial({ color: 0x1e293b })); muro.position.y = 1.25; g.add(muro);
+  const techo = new THREE.Mesh(new THREE.BoxGeometry(ancho + 6, 1.2, 26), new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: .6 }));
+  techo.position.set(0, alto + 9, -fondo + 9); techo.rotation.x = 0.1; techo.castShadow = false; g.add(techo);
+  const atras = new THREE.Mesh(new THREE.BoxGeometry(ancho + 6, alto + 10, 2), new THREE.MeshStandardMaterial({ color: 0x334155 })); atras.position.set(0, (alto + 10) / 2, -fondo - 1); g.add(atras);
+  g.position.set(x, 0, z); g.rotation.y = giro; escena.add(g);
+}
+const fx = C.LARGO / 2 + 14, fz = C.ANCHO / 2 + 12;
+tribuna(C.LARGO + 60, 0, -fz, 0); tribuna(C.LARGO + 60, 0, fz, Math.PI);
+tribuna(C.ANCHO + 30, -fx, 0, Math.PI / 2); tribuna(C.ANCHO + 30, fx, 0, -Math.PI / 2);
+const valla = await textura("texturas/valla.jpg", () => lienzo(2048, 64, (g, w, h) => { g.fillStyle = "#0b1220"; g.fillRect(0, 0, w, h);
+  g.font = "900 44px Segoe UI, Arial"; g.textBaseline = "middle";
+  g.textAlign = "center";
+  for (let i = 0; i < 4; i++) { g.fillStyle = i % 2 ? "#38bdf8" : "#ffffff"; g.fillText(i % 2 ? "MUNDIAL DE LAS IA" : "MenteXYZ", (i + .5) * w / 4, h / 2 + 2); } }));
+for (const s of [-1, 1]) {
+  const v = new THREE.Mesh(new THREE.BoxGeometry(C.LARGO + 6, 1, .3), new THREE.MeshStandardMaterial({ map: valla, emissive: 0xffffff, emissiveMap: valla, emissiveIntensity: .35 }));
+  v.position.set(0, .5, s * (C.ANCHO / 2 + 5)); if (s > 0) v.rotation.y = Math.PI; escena.add(v);
+}
+
+// Arcos con red
+function arco(x, s) {
+  const g = new THREE.Group(), m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .4 });
+  const palo = (l) => new THREE.Mesh(new THREE.CylinderGeometry(.07, .07, l, 10), m);
+  for (const z of [-C.ARCO / 2, C.ARCO / 2]) { const p = palo(2.44); p.position.set(0, 1.22, z); p.castShadow = true; g.add(p); }
+  const t = palo(C.ARCO); t.rotation.x = Math.PI / 2; t.position.set(0, 2.44, 0); t.castShadow = true; g.add(t);
+  const red = lienzo(256, 256, (c, w, h) => { c.clearRect(0, 0, w, h); c.strokeStyle = "rgba(255,255,255,.75)"; c.lineWidth = 1.5;
+    for (let i = 0; i <= w; i += 16) { c.beginPath(); c.moveTo(i, 0); c.lineTo(i, h); c.stroke(); c.beginPath(); c.moveTo(0, i); c.lineTo(w, i); c.stroke(); } });
+  const mr = new THREE.MeshBasicMaterial({ map: red, transparent: true, side: THREE.DoubleSide, depthWrite: false });
+  const fondo = new THREE.Mesh(new THREE.PlaneGeometry(C.ARCO, 2.44), mr); fondo.rotation.y = Math.PI / 2; fondo.position.set(s * 2, 1.22, 0); g.add(fondo);
+  const tech = new THREE.Mesh(new THREE.PlaneGeometry(2, C.ARCO), mr); tech.rotation.x = Math.PI / 2; tech.rotation.z = Math.PI / 2; tech.position.set(s * 1, 2.44, 0); g.add(tech);
+  for (const z of [-C.ARCO / 2, C.ARCO / 2]) { const l = new THREE.Mesh(new THREE.PlaneGeometry(2, 2.44), mr); l.position.set(s * 1, 1.22, z); g.add(l); }
+  g.position.x = x; escena.add(g);
+}
+arco(-C.LARGO / 2, -1); arco(C.LARGO / 2, 1);
+
+// Jugadores (video 18, pedido de Marino: «que no se muevan como maniquíes»). Cuerpo con cadera, columna, cuello,
+// hombro-codo-mano y cadera-rodilla-tobillo. La transmisión solo DIBUJA: posiciones y velocidades salen del motor.
+function camiseta(color, n) { return lienzo(256, 128, (g, w, h) => { g.fillStyle = color; g.fillRect(0, 0, w, h);
+  const cl = parseInt(color.slice(1, 3), 16) + parseInt(color.slice(3, 5), 16) + parseInt(color.slice(5, 7), 16) > 600;   // camiseta clara: número oscuro
+  g.fillStyle = cl ? "rgba(15,23,42,.92)" : "rgba(255,255,255,.92)"; g.font = "900 64px Arial"; g.textAlign = "center"; g.textBaseline = "middle";
+  g.fillText(String(n + 1), w / 2, h * .42); g.fillRect(0, 0, w, 7); }); }
+const PIEL = [0xe8b98f, 0xc68b5c, 0x8a5a3a, 0xf1cda8, 0x6b4226], PELO = [0x111111, 0x2b1a10, 0x5a3a1a, 0x1a1a1a, 0xb08a4a];
+function jugador(color, n, arquero, sp) {
+  const g = new THREE.Group(), tela = arquero ? "#facc15" : color;
+  const mat = (c, r) => new THREE.MeshStandardMaterial({ color: c, roughness: r === undefined ? .8 : r });
+  const mt = new THREE.MeshStandardMaterial({ map: camiseta(tela, n), roughness: .8 }), mmanga = mat(tela);
+  const mp = mat(PIEL[sp % PIEL.length], .7), mc = mat(arquero ? 0x111827 : (tela.toLowerCase() === "#f1f5f9" ? 0x1e293b : 0xf8fafc)), mm = mat(arquero ? 0x111827 : tela);
+  const mz = mat(0x151515, .45), mh = mat(PELO[(sp >> 1) % PELO.length], .9), mg = arquero ? mat(0xf8fafc, .6) : mp;
+  const mk = (padre, geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = true; padre.add(o); return o; };
+  const gr = (padre, x, y, z) => { const o = new THREE.Group(); o.position.set(x, y, z); padre.add(o); return o; };
+  const cuerpo = gr(g, 0, 0, 0), cadera = gr(cuerpo, 0, .93, 0), tronco = gr(cadera, 0, .04, 0);
+  mk(cadera, new THREE.SphereGeometry(.17, 14, 10), mc, 0, -.02, 0).scale.set(.8, .72, 1.08);
+  const torso = mk(tronco, new THREE.CapsuleGeometry(.185, .25, 5, 14), mt, 0, .31, 0); torso.scale.set(1.04, 1, .66); torso.rotation.y = Math.PI / 2;   // el número queda en la espalda
+  const cuello = gr(tronco, 0, .59, 0); mk(cuello, new THREE.CylinderGeometry(.045, .05, .1, 8), mp, 0, .02, 0);
+  const cabeza = gr(cuello, 0, .16, 0); mk(cabeza, new THREE.SphereGeometry(.118, 16, 12), mp, 0, 0, 0).scale.set(1, 1.1, .92);
+  const estilo = sp % 4;                                // pelo: corto, rapado, con volumen, calvo
+  if (estilo < 3) mk(cabeza, new THREE.SphereGeometry(.124, 16, 12, 0, Math.PI * 2, 0, Math.PI * (estilo === 1 ? .42 : .56)), mh, -.012, estilo === 2 ? .03 : .012, 0)
+    .scale.set(1, estilo === 2 ? 1.22 : 1.1, .95);
+  mk(cabeza, new THREE.SphereGeometry(.02, 6, 5), mp, .118, -.01, 0);          // nariz: se nota hacia dónde mira
+  const brazo = (s) => { const h = gr(tronco, 0, .5, s * .235); mk(h, new THREE.SphereGeometry(.068, 10, 8), mmanga, 0, 0, 0);
+    mk(h, new THREE.CapsuleGeometry(.047, .2, 3, 8), mmanga, 0, -.14, 0);
+    const c = gr(h, 0, -.28, 0); mk(c, new THREE.SphereGeometry(.045, 8, 6), mp, 0, 0, 0); mk(c, new THREE.CapsuleGeometry(.039, .2, 3, 8), mp, 0, -.12, 0); mk(c, new THREE.SphereGeometry(arquero ? .062 : .046, 8, 6), mg, 0, -.26, 0);
+    return { h, c, s }; };
+  const pierna = (s) => { const m = gr(cadera, 0, -.04, s * .095); mk(m, new THREE.CapsuleGeometry(.074, .3, 3, 10), mp, 0, -.21, 0);
+    mk(m, new THREE.CapsuleGeometry(.09, .1, 3, 10), mc, 0, -.1, 0);                 // pantaloneta
+    const r = gr(m, 0, -.42, 0); mk(r, new THREE.SphereGeometry(.068, 10, 8), mp, 0, 0, 0); mk(r, new THREE.CapsuleGeometry(.056, .3, 3, 10), mm, 0, -.2, 0);   // media
+    const t = gr(r, 0, -.4, 0); mk(t, new THREE.SphereGeometry(.06, 8, 6), mz, 0, -.01, 0); mk(t, new THREE.BoxGeometry(.25, .085, .1), mz, .06, -.045, 0);
+    return { m, r, t, s }; };
+  g.p = { cuerpo, cadera, tronco, cuello, brazos: [brazo(-1), brazo(1)], piernas: [pierna(-1), pierna(1)] };
+  g.fase = Math.random() * 6; g.yaw = null; g.vp = [0, 0]; g.ac = 0; g.pose = null; g.ant = [0, 0]; return g;
+}
+const figuras = P.jug.map((j, i) => { const f = jugador(P.equipos[j.e].color, j.n, j.n === 0, i * 7 + j.n * 3); f.scale.setScalar(ESCALA); escena.add(f); return f; });
+
+
+// Balón
+const pelota = new THREE.Mesh(new THREE.SphereGeometry(.22, 20, 16), new THREE.MeshStandardMaterial({ map: lienzo(256, 128, (g, w, h) => {
+  g.fillStyle = "#fff"; g.fillRect(0, 0, w, h); g.fillStyle = "#111"; for (let i = 0; i < 12; i++) { g.beginPath(); g.arc((i % 6) * 44 + (i > 5 ? 22 : 0) + 12, i > 5 ? 90 : 38, 11, 0, 7); g.fill(); } }), roughness: .35 }));
+pelota.castShadow = true; escena.add(pelota);
+
+// ---------- Transmisión ----------
+// ?grabar=nombre&tramos=20-35,60-75 graba esos tramos (segundos de juego) cuadro a cuadro, a 1920x1080, y los manda al
+// servidor local (herramientas/servidor16.py), que arma el .mp4. La transmisión solo DIBUJA lo que calcula el motor.
+const X = (x) => x - C.LARGO / 2, Z = (y) => y - C.ANCHO / 2;
+const ZOOM = Number(q.get("zoom") || 1);     // ?zoom=3: plano cerrado que sigue el balón (para ver a los jugadores de cerca)
+const VERT = q.has("vertical");               // tomas verticales (1080x1920) para Shorts: la cámara sigue el balón de cerca
+const GRABAR = q.get("grabar"), REP_SEG = Number(q.get("rep") || 4), FPS = Number(q.get("fps") || 30);
+const TRAMOS = (q.get("tramos") || "").split(",").filter(Boolean).map((s) => s.split("-").map(Number));
+const DUR = { cabezazo: .7, volea: .55, chilena: .95, centro: .5, tiro: .5, atajada: .8, escapa: .8, festejo: 99, lamento: 99 };
+const ROTULO = { cabezazo: "¡CABEZAZO!", volea: "¡VOLEA!", chilena: "¡CHILENA!", centro: "CENTRO AL ÁREA" };
+const accion = P.jug.map(() => null);
+const cual = (e, n) => P.jug.findIndex((j) => j.e === e && j.n === n);
+let vistosAcc = 0;
+function acciones() {                       // cada jugada aérea, tiro o atajada del motor mueve la figura que la hizo
+  for (; vistosAcc < P.eventos.length; vistosAcc++) { const e = P.eventos[vistosAcc];
+    if (!DUR[e.tipo]) continue; const i = cual(e.equipo, e.n === undefined ? 0 : e.n); if (i < 0) continue;
+    if (e.tipo === "tiro" && accion[i] && P.t - accion[i].t0 < .05) continue;      // el mismo toque ya fue cabezazo o chilena
+    accion[i] = { tipo: e.tipo, t0: P.t, s: Math.sign(P.balon.y - P.jug[i].y) || 1 }; }
+}
+const foto = () => ({ b: [P.balon.x, P.balon.y, Math.hypot(P.balon.vx, P.balon.vy), P.balon.z || 0],
+  j: P.jug.map((j, i) => { const a = accion[i];
+    return a && P.t - a.t0 < DUR[a.tipo] ? [j.x, j.y, j.vx, j.vy, j.ang, a.tipo, P.t - a.t0, a.s] : [j.x, j.y, j.vx, j.vy, j.ang]; }) });
+let actual = foto(), cinta = [], repeticion = null, congelado = null, vistos = 0, acumulado = 0, antes = performance.now(), tv = 0, adelantando = false;
+const H = { aviso: "", sub: "", avisoHasta: 0, jugada: "", jugadaHasta: 0, rep: false };
+const mira = new THREE.Vector3(0, 0, 0), ojo = new THREE.Vector3(0, 60, 95);
+
+function simular() {                        // un paso del motor; devuelve true si hubo gol
+  const ant = actual, n0 = P.eventos.length; P.avanzar(); acciones();
+  let gol = null; for (let i = n0; i < P.eventos.length; i++) if (P.eventos[i].tipo === "gol") gol = P.eventos[i];
+  actual = foto();
+  if (gol) {                                // el motor ya los formó para el saque: la transmisión se queda en el festejo
+    congelado = { b: ant.b, t: 0, j: ant.j.map((d, i) => P.jug[i].e === gol.equipo ? [d[0], d[1], 0, 0, d[4], "festejo", 0, 0] : [d[0], d[1], 0, 0, d[4], "lamento", 0, 0]) };
+    accion.fill(null); return true; }
+  cinta.push(actual); if (cinta.length > 400) cinta.shift(); return false;
+}
+
+const lim = (v, a, b) => Math.max(a, Math.min(b, v)), envuelve = (a) => Math.atan2(Math.sin(a), Math.cos(a));
+// La postura de un jugador en este cuadro: ángulos de cada articulación (radianes) según cómo se mueve y qué jugada hace.
+function postura(g, i, d, f, dt) {
+  const v = Math.hypot(d[2], d[3]), r = Math.min(1, v / 7), e = r * r * (3 - 2 * r), w = Math.min(1, v / .8);
+  const dbx = f.b[0] - d[0], dby = f.b[1] - d[1], db = Math.hypot(dbx, dby), tipo = d[5];
+  // hacia dónde mira el cuerpo: gira con límite (no de golpe) y, si está quieto, se vuelve hacia el balón
+  const quiere = v < .7 && !tipo ? Math.atan2(dby, dbx) : d[4];
+  if (g.yaw === null || dt === 0) g.yaw = quiere;
+  const dif = envuelve(quiere - g.yaw), paso = dt ? lim(dif * (1 - Math.exp(-11 * dt)), -9 * dt, 9 * dt) : 0; g.yaw += paso;
+  const giro = dt ? paso / dt : 0;
+  // aceleración a lo largo de la carrera: arrancar inclina hacia adelante, frenar echa el cuerpo atrás
+  if (dt) { const a = lim((v - Math.hypot(g.vp[0], g.vp[1])) / dt, -14, 14); g.ac += (a - g.ac) * (1 - Math.exp(-6 * dt)); }
+  g.vp = [d[2], d[3]];
+  g.fase += 2 * Math.PI * v * dt / (1.15 + .3 * v);             // la zancada avanza con los metros recorridos: los pies no patinan
+  const T = tv + i * 1.7, ph = [g.fase, g.fase + Math.PI];
+  const listo = (1 - Math.min(1, v / 1.5)) * (db < 16 ? 1 : .25);   // postura de espera: rodillas flexionadas, atento al balón
+  const t = { y: 0, atras: 0, lado: 0,
+    bob: -.035 * e + .04 * e * Math.cos(2 * g.fase) - .05 * listo + listo * .012 * Math.sin(T * 8) + (1 - e) * .006 * Math.sin(T * 1.7),
+    incl: .04 + .2 * e + g.ac * .012 + .15 * listo, roll: lim(giro * v * .012, -.3, .3),
+    giroC: -.18 * e * Math.sin(g.fase), giroT: .42 * e * Math.sin(g.fase), inclT: .03 * Math.sin(T * 1.7) * (1 - e) };
+  for (const k of [0, 1]) { const s = Math.sin(ph[k]);
+    t["hip" + k] = ((.28 + .62 * e) * s + .1 * e) * w + .25 * listo;
+    t["rod" + k] = .1 + (.35 + 1.25 * e) * Math.pow(Math.max(0, Math.cos(ph[k] + .8)), 1.4) * w + .5 * listo;
+    t["tob" + k] = -.45 * e * Math.max(0, -Math.sin(ph[k] + .3)) + .2 * listo;
+    t["abd" + k] = .03 + .06 * listo;
+    t["hom" + k] = -(.25 + .75 * e) * s * w - .08 * e + .04 * Math.sin(T * 1.3 + k * 2) * (1 - e);
+    t["cod" + k] = .28 + 1.15 * e + .2 * e * s + .25 * listo;
+    t["abb" + k] = .1 + .06 * e + .28 * listo; }
+  // la cabeza sigue el balón (y baja la vista si lo tiene cerca); compensa la inclinación del cuerpo
+  t.cabY = lim(envuelve(Math.atan2(dby, dbx) - g.yaw), -1.15, 1.15) * (1 - .45 * e);
+  t.cabP = lim(.55 - db * .05, 0, .5) - t.incl * .7;
+  let K = 16;
+  if (tipo) { const p = Math.min(1, d[6] / DUR[tipo]), k = Math.sin(Math.PI * p), tau = d[6]; K = 26;
+    const ambos = (n, val) => { t[n + 0] = t[n + 1] = val; };
+    if (tipo === "tiro" || tipo === "centro") { const q = p < .3 ? p / .3 : 1 - (p - .3) / .7;      // golpeo y acompañamiento
+      t.hip1 = .45 + 1.1 * q; t.rod1 = p < .12 ? .9 : .08 + .7 * Math.max(0, p - .5); t.tob1 = -.5; t.hip0 = -.28; t.rod0 = .3; t.tob0 = 0;
+      t.giroT = -.5 * q; t.giroC = .3 * q; t.incl = .02 - .16 * q; t.abb0 = .25 + .95 * q; t.hom0 = .35 * q; t.hom1 = -.85 * q; t.cod0 = .35; t.cod1 = .5; t.y = .05 * q; K = 34; }
+    else if (tipo === "cabezazo") { t.y = .6 * k; t.incl = p < .45 ? -.35 * p / .45 : -.35 + 1.05 * (p - .45) / .55;   // se arquea y golpea
+      ambos("rod", .95 * k); ambos("hip", .15 * k - (p < .45 ? .25 : 0)); ambos("hom", -.9 * k); ambos("abb", .2 + .5 * k); ambos("cod", .9); t.cabP = p < .45 ? -.35 : .35; t.giroT = t.giroC = 0; }
+    else if (tipo === "chilena") { t.y = .9 * k; t.atras = 1.5 * Math.sin(Math.PI * Math.min(1, p * 1.12)); t.incl = 0;   // de espaldas, tijera en el aire
+      if (p < .42) { t.hip0 = 1.7; t.rod0 = .5; t.hip1 = .3; t.rod1 = .9; } else { t.hip1 = 1.95; t.rod1 = .05; t.hip0 = .45; t.rod0 = 1; }
+      t.tob1 = -.5; ambos("abb", .95); ambos("hom", -.7); ambos("cod", .3); t.cabP = -.2; t.giroT = t.giroC = 0; K = 30; }
+    else if (tipo === "volea") { t.y = .16 * k; t.lado = -.45 * k; t.abd1 = 1.15 * k; t.hip1 = .55 * k; t.rod1 = .9 * (1 - k) + .08; t.tob1 = -.4;
+      t.hip0 = -.1; t.rod0 = .25; ambos("abb", .25 + .75 * k); t.giroT = .4 * k; t.incl = .05; K = 30; }
+    else if (tipo === "atajada" || tipo === "escapa") { const s = (d[7] || 1) * (Math.cos(g.yaw) < 0 ? -1 : 1);       // se lanza hacia el lado del balón
+      t.y = .38 * k; t.lado = s * 1.3 * k; ambos("hom", 2.9 * Math.min(1, p * 5)); ambos("abb", .12); ambos("cod", tipo === "escapa" ? .7 : .1);
+      t.hip0 = -.25; t.hip1 = .3; ambos("rod", .45); t.incl = 0; t.cabP = -.2; t.giroT = t.giroC = 0; }
+    else if (tipo === "festejo") { const m = i % 3; t.cabP = -.25; t.incl = 0; t.giroT = t.giroC = 0; K = 14;
+      if (m === 0) { t.y = .3 * Math.abs(Math.sin(tau * 7 + i)); ambos("hom", 2.9); ambos("cod", .12); ambos("abb", .25); ambos("rod", .25); }
+      else if (m === 1) { t.y = .1 * Math.abs(Math.sin(tau * 6 + i)); ambos("abb", 1.45); ambos("hom", .1); ambos("cod", .1); t.roll = .22 * Math.sin(tau * 5 + i); }
+      else { t.y = .14 * Math.abs(Math.sin(tau * 6 + i)); t.hom1 = 2.4 + .4 * Math.sin(tau * 11); t.cod1 = 1.25; t.hom0 = .3; t.cod0 = 1.3; ambos("rod", .35); t.incl = .12; } }
+    else if (tipo === "lamento") { const m = i % 3; K = 5; t.giroT = t.giroC = 0;
+      if (m === 0) { t.cabP = .55; t.incl = .12; ambos("cod", .15); }
+      else if (m === 1) { ambos("hom", 2.5); ambos("cod", 2.2); ambos("abb", .5); t.cabP = .2; }
+      else { ambos("abb", .6); ambos("cod", 1.5); ambos("hom", -.25); t.cabP = .4; t.incl = .1; } } }
+  // suavizado: cada articulación va hacia su ángulo sin saltos (salvo en un corte de cámara o de repetición)
+  const corte = !g.pose || dt === 0 || Math.hypot(d[0] - g.ant[0], d[1] - g.ant[1]) > 2, a = corte ? 1 : 1 - Math.exp(-K * dt);
+  if (corte) { g.pose = {}; g.yaw = quiere; }
+  g.ant = [d[0], d[1]];
+  for (const n in t) g.pose[n] = (g.pose[n] === undefined ? t[n] : g.pose[n] + (t[n] - g.pose[n]) * a);
+  return g.pose;
+}
+function pintar(f, dt) {
+  f.j.forEach((d, i) => { const g = figuras[i], o = postura(g, i, d, f, dt), q = g.p;
+    g.position.set(X(d[0]), (o.y + Math.cos(o.atras) * 0 ) * ESCALA, Z(d[1])); g.rotation.set(0, -g.yaw, 0);
+    q.cuerpo.position.y = o.bob; q.cuerpo.rotation.set(o.roll + o.lado, 0, -o.incl + o.atras);
+    q.cadera.rotation.y = o.giroC; q.tronco.rotation.set(0, o.giroT, -o.inclT);
+    q.cuello.rotation.set(0, -o.cabY, -o.cabP);
+    for (const k of [0, 1]) { const L = q.piernas[k], B = q.brazos[k];
+      L.m.rotation.set(-L.s * o["abd" + k], 0, o["hip" + k]); L.r.rotation.z = -o["rod" + k]; L.t.rotation.z = o["tob" + k];
+      B.h.rotation.set(-B.s * o["abb" + k], 0, o["hom" + k]); B.c.rotation.z = o["cod" + k]; } });
+  const vel = f.b[2];                        // la altura del balón es la del motor (centros, globos y rebotes reales)
+  pelota.position.set(X(f.b[0]), .22 + f.b[3], Z(f.b[1])); pelota.rotation.z -= vel * dt * 3; pelota.rotation.x += vel * dt;
+}
+function camaraTv(f, dt, modo, salto) {
+  const bx = X(f.b[0]), bz = Z(f.b[1]), by = f.b[3] || 0, u = (k) => salto ? 1 : 1 - Math.pow(k, dt);
+  if (VERT) {
+    if (modo === "rep") { const lado = repeticion.lado;
+      ojo.lerp(new THREE.Vector3(lado * (C.LARGO / 2 + 13), 9, bz * .5 + 5), u(.02)); mira.lerp(new THREE.Vector3(bx, 1 + by * .5, bz), u(.0005)); camara.fov = 38; }
+    else { ojo.lerp(new THREE.Vector3(bx, 27, bz + 36), u(.02)); mira.lerp(new THREE.Vector3(bx, by * .35, bz + 3.5), u(.004)); camara.fov = 27; }
+    camara.position.copy(ojo); camara.lookAt(mira); camara.updateProjectionMatrix(); return; }
+  if (modo === "rep") { const lado = repeticion.lado;      // detrás del arco, baja
+    ojo.lerp(new THREE.Vector3(lado * (C.LARGO / 2 + 16), 7, bz * .35 + 9), u(.02)); mira.lerp(new THREE.Vector3(bx, 1.2 + by * .5, bz), u(.0005)); camara.fov = 24; }
+  else { ojo.lerp(new THREE.Vector3(bx * .8, 17, 62 + bz * .3), u(.08)); mira.lerp(new THREE.Vector3(bx * (ZOOM > 2 ? 1 : .93), by * .35 + (ZOOM > 2 ? 1 : 0), bz * (ZOOM > 2 ? 1 : .72) - (ZOOM > 2 ? 0 : 1)), u(ZOOM > 2 ? .0005 : .02)); camara.fov = 16.5 / ZOOM; }
+  camara.position.copy(ojo); camara.lookAt(mira); camara.updateProjectionMatrix();
+}
+function aviso(txt, sub, seg) { if (adelantando && seg < 100) return; H.aviso = txt; H.sub = sub || ""; H.avisoHasta = tv + seg;
+  $("aviso").innerHTML = txt + (sub ? "<small>" + sub + "</small>" : ""); }
+function reloj() { const m = P.t / C.DURACION * 90; if (P.mitad === 3) $("reloj").style.color = "#facc15"; $("reloj").textContent = String(Math.floor(m)).padStart(2, "0") + ":" + String(Math.floor(m * 60 % 60)).padStart(2, "0"); }
+function eventos() {
+  for (; vistos < P.eventos.length; vistos++) { const e = P.eventos[vistos];
+    if (e.tipo === "gol") { $("g0").textContent = e.marcador[0]; $("g1").textContent = e.marcador[1];
+      aviso("¡GOOOL!", P.equipos[e.equipo].nombre + (e.propia ? " (en propia puerta)" : " · n.º " + (e.n + 1)), 3.2);
+      if (!adelantando && congelado) repeticion = { cinta: SIN_REP ? [] : cinta.slice(-Math.round(REP_SEG * 60)), i: 0, lado: e.equipo === 0 ? 1 : -1, espera: 1.8, nueva: true };
+      else congelado = null;
+      cinta = []; }
+    if (ROTULO[e.tipo] && !adelantando) { H.jugada = ROTULO[e.tipo] + " · " + P.equipos[e.equipo].nombre; H.jugadaHasta = tv + 1.7; $("jugada").textContent = H.jugada; }
+    if (e.tipo === "descanso") aviso("DESCANSO", $("g0").textContent + " – " + $("g1").textContent, 2.5);
+    if (e.tipo === "prorroga") aviso("TIEMPO EXTRA", "Gol de oro: el que anota, gana", 3.5);
+    if (e.tipo === "final") aviso(e.oro !== undefined ? "¡GOL DE ORO!" : "FINAL", local.nombre + " " + P.equipos[0].goles + " – " + P.equipos[1].goles + " " + visita.nombre, 9999);
+    if (e.tipo === "error") $("datos").textContent = "Error en el código de " + P.equipos[e.equipo].nombre + ": " + e.texto; }
+}
+function ajustar() { if (GRABAR) return; const w = innerWidth, h = innerHeight; renderer.setSize(w, h); camara.aspect = w / h; camara.updateProjectionMatrix(); }
+addEventListener("resize", ajustar); ajustar();
+
+function avanzarCuadro(dt) {                 // un cuadro de la transmisión (en vivo o grabando)
+  tv += dt;
+  if (repeticion) {
+    if (repeticion.espera > 0) { repeticion.espera -= dt; H.rep = false;
+      congelado.t += dt; for (const d of congelado.j) if (d[5]) d[6] = congelado.t;
+      pintar(congelado, dt); camaraTv(congelado, dt); }
+    else { H.rep = true; repeticion.i += dt * 60 * .5; const k = Math.floor(repeticion.i), n = repeticion.cinta.length;
+      if (!n || k >= n + 24) { repeticion = null; congelado = null; H.rep = false; pintar(actual, dt); camaraTv(actual, dt, null, true); }
+      else { const f = repeticion.cinta[Math.min(k, n - 1)]; pintar(f, dt * .5); camaraTv(f, dt, "rep", repeticion.nueva); repeticion.nueva = false; } }
+  } else {
+    acumulado += dt * VEL;
+    while (acumulado >= C.DT && !P.terminado) { acumulado -= C.DT; if (simular()) { acumulado = 0; break; } }
+    eventos(); reloj(); const f = repeticion && congelado ? congelado : actual; pintar(f, dt); camaraTv(f, dt);
+  }
+  $("aviso").style.opacity = tv < H.avisoHasta ? 1 : 0; $("jugada").style.opacity = tv < H.jugadaHasta ? 1 : 0; $("rep").style.display = H.rep ? "block" : "none";
+  renderer.render(escena, camara);
+}
+
+// El mismo marcador, dibujado sobre el cuadro que se graba (el de la página es HTML y no sale en el lienzo 3D).
+function hudVertical(g, W, Hh) {          // marcador corto y centrado (nombres de las IA), lejos de los bordes del Short
+  g.save(); g.textBaseline = "middle"; const F = "Segoe UI, Roboto, Arial, sans-serif", h = 76, y = 196;
+  g.font = "700 40px " + F; const wn = (e) => g.measureText(e.ia).width + 86, wl = wn(local), wv = wn(visita), total = wl + 160 + wv + 150; let x = (W - total) / 2;
+  const nombre = (e, w) => { g.fillStyle = "#101827"; g.fillRect(x, y, w, h); g.fillStyle = "#fff"; g.fillRect(x + 18, y + 14, 22, 48); g.fillStyle = e.color; g.fillRect(x + 21, y + 17, 16, 42);
+    g.fillStyle = "#fff"; g.textAlign = "left"; g.font = "700 40px " + F; g.fillText(e.ia, x + 58, y + h / 2 + 2); x += w; };
+  const gol = (t) => { g.fillStyle = "#fff"; g.fillRect(x, y, 80, h); g.fillStyle = "#101827"; g.font = "800 50px " + F; g.textAlign = "center"; g.fillText(t, x + 40, y + h / 2 + 2); x += 80; };
+  nombre(local, wl); gol($("g0").textContent); gol($("g1").textContent); g.fillStyle = "#cbd5e1"; g.fillRect(x - 81, y + 10, 2, h - 20); nombre(visita, wv);
+  g.fillStyle = "#1d4ed8"; g.fillRect(x, y, 150, h); g.fillStyle = P.mitad === 3 ? "#facc15" : "#fff"; g.font = "700 40px " + F; g.textAlign = "center"; g.fillText($("reloj").textContent, x + 75, y + h / 2 + 2);
+  g.shadowColor = "rgba(0,0,0,.8)"; g.shadowBlur = 26; g.shadowOffsetY = 6; g.fillStyle = "#fff";
+  if (tv < H.avisoHasta) { g.font = "900 170px " + F; g.fillText(H.aviso, W / 2, Hh * .36); if (H.sub) { g.font = "600 46px " + F; g.fillText(H.sub, W / 2, Hh * .36 + 120); } }
+  if (tv < H.jugadaHasta) { g.font = "900 62px " + F; g.fillStyle = "#fde047"; g.fillText(H.jugada.split(" · ")[0], W / 2, Hh * .30); g.fillStyle = "#fff"; }
+  g.shadowColor = "transparent";
+  if (H.rep) { g.fillStyle = "#dc2626"; g.fillRect(W / 2 - 150, y + h + 18, 300, 64); g.fillStyle = "#fff"; g.font = "800 36px " + F; g.fillText("REPETICIÓN", W / 2, y + h + 52); }
+  g.restore();
+}
+function hud(g, W, Hh) {
+  if (VERT) return hudVertical(g, W, Hh);
+  g.save(); g.textBaseline = "middle"; const F = "Segoe UI, Roboto, Arial, sans-serif";
+  g.save(); g.translate(40, 32); g.scale(1.45, 1.45); g.font = "700 22px " + F;
+  const an = (s) => Math.max(150, g.measureText(s).width + 50); let x = 0; const h = 44;
+  const nombre = (eq) => { const w = an(eq.nombre); g.fillStyle = "#101827"; g.fillRect(x, 0, w, h); g.fillStyle = "#fff"; g.fillRect(x + 12, 8, 14, 28);
+    g.fillStyle = eq.color; g.fillRect(x + 14, 10, 10, 24); g.fillStyle = "#fff"; g.textAlign = "left"; g.font = "700 22px " + F; g.fillText(eq.nombre, x + 36, h / 2 + 1); x += w; };
+  const gol = (t) => { g.fillStyle = "#fff"; g.fillRect(x, 0, 50, h); g.fillStyle = "#101827"; g.font = "800 28px " + F; g.textAlign = "center"; g.fillText(t, x + 25, h / 2 + 1); x += 50; };
+  nombre(local); gol($("g0").textContent); gol($("g1").textContent); g.fillStyle = "#cbd5e1"; g.fillRect(x - 51, 6, 2, h - 12); nombre(visita);
+  g.fillStyle = "#1d4ed8"; g.fillRect(x, 0, 96, h); g.fillStyle = P.mitad === 3 ? "#facc15" : "#fff"; g.font = "700 22px " + F; g.textAlign = "center"; g.fillText($("reloj").textContent, x + 48, h / 2 + 1);
+  g.restore();
+  g.shadowColor = "rgba(0,0,0,.75)"; g.shadowBlur = 26; g.shadowOffsetY = 6; g.textAlign = "center"; g.fillStyle = "#fff";
+  if (tv < H.avisoHasta) { g.font = "900 150px " + F; g.fillText(H.aviso, W / 2, Hh * .42); if (H.sub) { g.font = "600 46px " + F; g.fillText(H.sub, W / 2, Hh * .42 + 105); } }
+  if (tv < H.jugadaHasta) { g.font = "900 54px " + F; g.fillStyle = "#fde047"; g.fillText(H.jugada, W / 2, Hh - 170); g.fillStyle = "#fff"; }
+  g.shadowBlur = 8; g.shadowOffsetY = 2; g.font = "500 22px " + F; g.textAlign = "left"; g.fillText($("pie").textContent, 40, Hh - 34);
+  g.shadowColor = "transparent";
+  if (H.rep) { g.fillStyle = "#dc2626"; g.fillRect(W - 290, 32, 250, 60); g.fillStyle = "#fff"; g.font = "800 32px " + F; g.textAlign = "center"; g.fillText("REPETICIÓN", W - 165, 63); }
+  g.restore();
+}
+async function grabar() {
+  const W = VERT ? 1080 : 1920, Hh = VERT ? 1920 : 1080; renderer.setPixelRatio(1); renderer.setSize(W, Hh, false); camara.aspect = W / Hh; camara.updateProjectionMatrix();
+  const lz = document.createElement("canvas"); lz.width = W; lz.height = Hh; const g = lz.getContext("2d", { willReadFrequently: true }), dt = 1 / FPS; let n = 0; const ms = [0, 0];
+  for (const [a, b] of (TRAMOS.length ? TRAMOS : [[0, 1e9]])) {
+    adelantando = true; while (P.t < a && !P.terminado) simular(); eventos(); reloj(); adelantando = false;
+    repeticion = null; congelado = null; acumulado = 0; H.avisoHasta = Math.min(H.avisoHasta, P.terminado ? 1e9 : 0); H.jugadaHasta = 0;
+    pintar(actual, 0); camaraTv(actual, 0, null, true);
+    for (let cola = 0; ;) {
+      if (!repeticion && P.t >= b) break;
+      if (P.terminado && !repeticion && cola++ > FPS * 4) break;
+      let t0 = performance.now(); avanzarCuadro(dt); g.drawImage(renderer.domElement, 0, 0, W, Hh); hud(g, W, Hh);
+      // píxeles crudos: toBlob espera a que el navegador esté libre y tarda ~1 s por cuadro si la pestaña no se ve
+      const px = g.getImageData(0, 0, W, Hh).data; ms[0] += performance.now() - t0; t0 = performance.now();
+      await fetch("/cuadro?nombre=" + GRABAR + "&fps=" + FPS + "&w=" + W + "&h=" + Hh, { method: "POST", body: px }); ms[1] += performance.now() - t0; n++;
+      if (n % 30 === 0) document.title = "grabando " + n; }
+  }
+  // Comprobación: los goles vistos hasta aquí tienen que ser los del torneo oficial (torneo.json), uno por uno.
+  const of = await (await fetch("torneo.json")).json(), ex = await fetch("extra.json").then((r) => r.ok ? r.json() : { partidos: [] }).catch(() => ({ partidos: [] })), par = of.partidos.concat(of.espejo || [], of.semis || [], of.final ? [of.final] : [], ex.partidos).find((p) => p.semilla === semilla && p.local === idL && p.visita === idV);
+  const firma = (l) => l.filter((e) => e.t <= P.t + 1e-6).map((e) => e.t.toFixed(2) + "/" + e.equipo).join(" ");
+  const igual = par ? firma(par.resumen.goles) === firma(P.eventos.filter((e) => e.tipo === "gol")) : false;
+  await fetch("/fin?nombre=" + GRABAR + "&igual=" + (igual ? 1 : 0) + "&ms=" + Math.round(ms[0] / n) + "_" + Math.round(ms[1] / n), { method: "POST" }); document.title = "LISTO " + n; window.listo = n;
+}
+
+function cuadro(ahora) { const dt = Math.min(.05, (ahora - antes) / 1000); antes = ahora; avanzarCuadro(dt); requestAnimationFrame(cuadro); }
+// Para revisar un momento del partido sin esperar (consola): saltar(30) adelanta 30 segundos de juego.
+window.saltar = (seg) => { const n = Math.round(seg / C.DT); adelantando = true; for (let i = 0; i < n && !P.terminado; i++) simular(); eventos(); reloj(); adelantando = false;
+  repeticion = null; congelado = null; pintar(actual, .016); camaraTv(actual, 0, null, true); renderer.render(escena, camara); return P.t; };
+window.cuadros = (n, dt) => { for (let i = 0; i < n; i++) avanzarCuadro(dt || 1 / 30); return P.t; };   // avanzar a mano (pestaña oculta)
+if (GRABAR) grabar(); else { camaraTv(actual, 1); requestAnimationFrame(cuadro); }
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{
+ "chatgpt": {
+  "ia": "ChatGPT",
+  "nombre": "NeuroFC – Los Algoritmos",
+  "color": "#10a37f",
+  "archivo": "chatgpt_r2.js"
+ },
+ "gemini": {
+  "ia": "Gemini",
+  "nombre": "vector105",
+  "color": "#2563eb",
+  "archivo": "gemini_r1.js"
+ },
+ "claude": {
+  "ia": "Claude",
+  "nombre": "Cafeteros FC",
+  "color": "#ea580c",
+  "archivo": "claude_r1.js"
+ },
+ "grok": {
+  "ia": "Grok",
+  "nombre": "Grok United",
+  "color": "#1f2937",
+  "archivo": "grok_r1.js"
+ },
+ "chatgpt_v16": {
+  "ia": "ChatGPT (primer mundial)",
+  "nombre": "NeuroFC (antes)",
+  "color": "#6b7280",
+  "archivo": "chatgpt_m2.js"
+ },
+ "gemini_v16": {
+  "ia": "Gemini (primer mundial)",
+  "nombre": "vector105 (antes)",
+  "color": "#6b7280",
+  "archivo": "gemini_m1.js"
+ },
+ "claude_v16": {
+  "ia": "Claude (primer mundial)",
+  "nombre": "Cafeteros (antes)",
+  "color": "#6b7280",
+  "archivo": "claude_m1.js"
+ },
+ "grok_v16": {
+  "ia": "Grok (primer mundial)",
+  "nombre": "Grok United (antes)",
+  "color": "#6b7280",
+  "archivo": "grok_m2.js"
+ },
+ "chatgpt_extra": {
+  "ia": "ChatGPT (3.er mensaje, fuera de reglas)",
+  "nombre": "NeuroFC (extra)",
+  "color": "#10a37f",
+  "archivo": "chatgpt_extra3.js"
+ },
+ "copilot": {
+  "ia": "Copilot",
+  "nombre": "Neural Press FC",
+  "color": "#c026d3",
+  "archivo": "copilot_m1.js"
+ },
+ "qwen": {
+  "ia": "Qwen",
+  "nombre": "Quantum FC",
+  "color": "#f1f5f9",
+  "archivo": "qwen_m1.js"
+ }
+}

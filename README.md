@@ -6,6 +6,32 @@ un mundial de fútbol». Cada IA (versión gratis) recibió el mismo mensaje y e
 
 Página para verlo y probar tu propio equipo: https://marinoperez.github.io/mundial-futbol-ia/
 
+## La revancha (27 de noviembre de 2026)
+
+Segundo torneo, en la carpeta [`revancha/`](revancha/) y en https://marinoperez.github.io/mundial-futbol-ia/revancha/
+(video «ChatGPT recibió 54 goles en el mundial de las IA: esta fue su revancha»). A las cuatro IA del primer mundial
+les mostramos sus resultados y su propio código y tuvieron un mensaje para mejorarlo; entraron Copilot y Qwen, que
+pidió el público.
+
+- `revancha/mensajes/`: el mensaje que recibió cada una (`nueva.txt` es el de Copilot y Qwen).
+- `revancha/cerebros/`: los códigos tal como los entregaron. `chatgpt_r1.js` y `chatgpt_r2.js` fallan en cada jugada
+  («retro is not defined»): con sus dos mensajes gastados compitió `chatgpt_r2.js`, un equipo que no se mueve.
+  `chatgpt_extra3.js` es un tercer mensaje fuera de reglas (`extra.js`, `extra.json`): no cuenta.
+- `revancha/torneo.js`, `torneo.json`, `torneo.txt`: versión nueva contra vieja (semillas 1841 a 1848), todos contra
+  todos (1801 a 1815), semifinales (1821 y 1822) y final (1830).
+- `revancha/partido.html`: la transmisión con los jugadores nuevos. El motor (`motor.js`) es el mismo.
+
+| Puesto | Equipo | Puntos | Goles |
+|---|---|---|---|
+| 1 | Gemini · vector105 | 13 | 22 – 6 |
+| 2 | Claude · Cafeteros FC | 12 | 25 – 9 |
+| 3 | Qwen · Quantum FC | 7 | 26 – 25 |
+| 4 | Copilot · Neural Press FC | 7 | 10 – 23 |
+| 5 | Grok · Grok United | 4 | 26 – 24 |
+| 6 | ChatGPT · NeuroFC – Los Algoritmos | 0 | 0 – 22 |
+
+Semifinales: Gemini 8 – 1 Copilot y Claude 10 – 2 Qwen. Final: Gemini 1 – 0 Claude.
+
 ## Qué hay aquí
 
 - `motor.js`: el simulador (reglas, física del balón, arquero). Funciona en Node y en el navegador.
@@ -34,7 +60,7 @@ Con las mismas semillas salen los mismos marcadores.
 - Son partidos de seis minutos con reglas simples (sin faltas ni fuera de juego). Esto mide quién programó mejor este
   juego, y nada más.
 
-## Resultados (24 de noviembre de 2026)
+## Resultados del primer mundial (24 de noviembre de 2026)
 
 | Puesto | Equipo | Puntos | Goles |
 |---|---|---|---|
@@ -48,4 +74,4 @@ Final: Claude 4 – 2 Gemini.
 ## Licencia
 
 MIT (ver `LICENSE`): puedes usar, copiar y modificar el simulador citando a MenteXYZ. Los archivos de `cerebros/` y
-`ronda1/` son las respuestas de cada asistente (ChatGPT, Gemini, Claude y Grok), publicadas tal como las entregaron.
+`ronda1/` y `revancha/cerebros/` son las respuestas de cada asistente (ChatGPT, Gemini, Claude, Grok, Copilot y Qwen), publicadas tal como las entregaron.

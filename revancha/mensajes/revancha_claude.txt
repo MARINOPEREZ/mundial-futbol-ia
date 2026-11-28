@@ -1,0 +1,266 @@
+No sé programar. Hace unos días organizamos un mundial de fútbol entre inteligencias artificiales: cada IA escribió el "cerebro" de su equipo y los equipos jugaron entre sí, 11 contra 11, en un simulador. Tú participaste: tu equipo se llamó "Cafeteros FC" y terminó en el puesto 1 de 4 (fue el campeón). Ahora viene la REVANCHA, con el mismo simulador y las mismas reglas, y esta vez también juegan otras IA que no estuvieron. Tienes UN solo mensaje para mejorar tu equipo y GANAR el torneo.
+
+Así quedó la tabla del primer mundial:
+1. Cafeteros FC (Claude): 15 puntos, 5 ganados, 0 empatados, 1 perdidos, 43 goles a favor y 8 en contra
+2. vector105 (Gemini): 13 puntos, 4 ganados, 1 empatados, 1 perdidos, 21 goles a favor y 8 en contra
+3. Grok United (Grok): 7 puntos, 2 ganados, 1 empatados, 3 perdidos, 23 goles a favor y 18 en contra
+4. NeuroFC – Los Algoritmos (ChatGPT): 0 puntos, 0 ganados, 0 empatados, 6 perdidos, 1 goles a favor y 54 en contra
+
+Estos fueron tus partidos (tus goles primero):
+- contra NeuroFC – Los Algoritmos (ChatGPT): 14 a 0 · tus tiros al arco 37, los del rival 70 · tus pases 82, los del rival 6 · tuviste el balón el 66 % del tiempo
+- contra vector105 (Gemini): 1 a 5 · tus tiros al arco 29, los del rival 12 · tus pases 71, los del rival 49 · tuviste el balón el 51 % del tiempo
+- contra Grok United (Grok): 5 a 1 · tus tiros al arco 15, los del rival 16 · tus pases 93, los del rival 14 · tuviste el balón el 64 % del tiempo
+- contra NeuroFC – Los Algoritmos (ChatGPT): 14 a 0 · tus tiros al arco 38, los del rival 72 · tus pases 73, los del rival 6 · tuviste el balón el 64 % del tiempo
+- contra vector105 (Gemini): 3 a 0 · tus tiros al arco 32, los del rival 4 · tus pases 67, los del rival 44 · tuviste el balón el 54 % del tiempo
+- contra Grok United (Grok): 6 a 2 · tus tiros al arco 19, los del rival 17 · tus pases 71, los del rival 17 · tuviste el balón el 58 % del tiempo
+- FINAL: contra vector105 (Gemini): 4 a 2 · tus tiros al arco 33, los del rival 10 · tus pases 80, los del rival 38 · tuviste el balón el 56 % del tiempo
+
+Este es el código que entregaste aquella vez, sin cambios:
+
+function decidir(estado) {
+  try {
+    return cerebro(estado);
+  } catch (e) {
+    return estado.mios.map(function (p) { return { ir: { x: p.x, y: p.y } }; });
+  }
+}
+
+function cerebro(estado) {
+  var C = estado.cancha, b = estado.balon, mios = estado.mios, riv = estado.rivales;
+  var L = C.largo, W = C.ancho, GY = W / 2;
+
+  function clamp(v, a, c) { return Math.max(a, Math.min(c, v)); }
+  function dist(a, c) { return Math.hypot(a.x - c.x, a.y - c.y); }
+  function segDist(px, py, ax, ay, bx, by) {
+    var dx = bx - ax, dy = by - ay;
+    var l2 = dx * dx + dy * dy;
+    var t = l2 > 0 ? clamp(((px - ax) * dx + (py - ay) * dy) / l2, 0, 1) : 0;
+    return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+  }
+  function minRivDist(x, y) {
+    var m = 999;
+    for (var i = 0; i < riv.length; i++) {
+      var d = Math.hypot(riv[i].x - x, riv[i].y - y);
+      if (d < m) m = d;
+    }
+    return m;
+  }
+
+  // ---- Posesión ----
+  var dMio = 999, dRiv = 999, i;
+  for (i = 0; i < mios.length; i++) dMio = Math.min(dMio, dist(mios[i], b));
+  for (i = 0; i < riv.length; i++) dRiv = Math.min(dRiv, dist(riv[i], b));
+  var poss = (dMio <= dRiv + 0.5) || estado.saque === "propio";
+
+  var perdiendoTarde = estado.tiempo >= 300 && estado.marcador.propio < estado.marcador.rival;
+  var late = perdiendoTarde ? 12 : 0;
+
+  // ---- Punto de interceptación del balón ----
+  function objetivoBalon(p) {
+    var tx, ty;
+    if (b.z > 0.8) {
+      var g = 10;
+      var t = (b.vz + Math.sqrt(b.vz * b.vz + 2 * g * b.z)) / g;
+      tx = b.x + b.vx * t * 0.9;
+      ty = b.y + b.vy * t * 0.9;
+    } else {
+      var d = dist(p, b);
+      var tt = Math.min(d / 7.5, 1.2);
+      tx = b.x + b.vx * tt * 0.6;
+      ty = b.y + b.vy * tt * 0.6;
+      if (d < 3) { tx = b.x; ty = b.y; }
+    }
+    return { x: clamp(tx, 0.5, L - 0.5), y: clamp(ty, 0.5, W - 0.5) };
+  }
+
+  // ---- Quiénes presionan al balón (solo jugadores de campo) ----
+  var ranking = [];
+  for (i = 1; i < 11; i++) ranking.push({ i: i, d: dist(mios[i], b) });
+  ranking.sort(function (a, c) { return a.d - c.d; });
+  var nChase = poss ? 1 : 2;
+  var chasers = {};
+  for (i = 0; i < nChase; i++) chasers[ranking[i].i] = true;
+
+  // ---- Ajuste de patada según altura del balón ----
+  function fix(o) {
+    if (b.z > 1.3) { o.fuerza = Math.min(o.fuerza, 0.6); o.altura = 0; }
+    else if (b.z > 0.4) { o.fuerza = Math.min(o.fuerza, 0.7); }
+    return o;
+  }
+
+  // ---- Regate: hacia el arco rival esquivando rivales ----
+  function regatear(p) {
+    var dx = L - p.x, dy = GY - p.y;
+    var n = Math.hypot(dx, dy) || 1;
+    dx /= n; dy /= n;
+    for (var k = 0; k < riv.length; k++) {
+      var d = dist(p, riv[k]);
+      if (d < 7 && d > 0.1) {
+        var w = (7 - d) / 7 * 1.6;
+        dx += (p.x - riv[k].x) / d * w;
+        dy += (p.y - riv[k].y) / d * w;
+      }
+    }
+    n = Math.hypot(dx, dy) || 1;
+    dx /= n; dy /= n;
+    return { x: clamp(p.x + dx * 10, 0.5, L - 0.5), y: clamp(p.y + dy * 10, 0.5, W - 0.5) };
+  }
+
+  // ---- Decisión del jugador que tiene el balón al pie ----
+  function decidirConBalon(p, idx) {
+    var dG = Math.hypot(L - p.x, GY - p.y);
+    var presion = minRivDist(p.x, p.y);
+
+    // 1) Tiro
+    var enZona = (p.x > L - 27 && Math.abs(p.y - GY) < 22) || p.x > L - 16;
+    if (enZona) {
+      var kr = null;
+      for (var k = 0; k < riv.length; k++) if (riv[k].n === 0) kr = riv[k];
+      var ty;
+      if (Math.abs(p.y - GY) > 10) ty = p.y > GY ? GY - 2.9 : GY + 2.9;
+      else if (kr) ty = kr.y > GY ? GY - 2.9 : GY + 2.9;
+      else ty = GY + 2.9;
+      var f = clamp(0.6 + dG / 70, 0.75, 1);
+      return { patear: fix({ x: L, y: ty, fuerza: f, altura: 0 }) };
+    }
+
+    // 2) Mejor pase
+    var best = null;
+    for (var j = 1; j < 11; j++) {
+      if (j === idx) continue;
+      var q = mios[j];
+      var dd = dist(p, q);
+      if (dd < 4 || dd > 45) continue;
+      var fwd = q.x - p.x;
+      var rLane = 999;
+      for (var m = 0; m < riv.length; m++) {
+        rLane = Math.min(rLane, segDist(riv[m].x, riv[m].y, p.x, p.y, q.x, q.y));
+      }
+      var rRecv = minRivDist(q.x, q.y);
+      if (rRecv < 3) continue;
+      var blocked = rLane < 2;
+      if (blocked && dd < 12) continue;
+      var score = fwd - dd * 0.1 + Math.min(rRecv, 10) * 1.5 + Math.min(rLane, 6) * 2 - (blocked ? 6 : 0);
+      if (fwd < -5) score -= 10;
+      if (!best || score > best.score) best = { score: score, q: q, dd: dd, fwd: fwd, blocked: blocked };
+    }
+    if (best && !(presion > 5 && best.fwd < 8)) {
+      var lx = best.q.x + best.q.vx * 0.6, ly = best.q.y + best.q.vy * 0.6;
+      lx = clamp(lx, 0.5, L - 0.5); ly = clamp(ly, 0.5, W - 0.5);
+      var d2 = Math.hypot(lx - p.x, ly - p.y);
+      if (best.blocked) {
+        return { patear: fix({ x: lx, y: ly, fuerza: clamp(d2 / 1.44 / 28, 0.25, 1), altura: 0.6 }) };
+      }
+      return { patear: fix({ x: lx, y: ly, fuerza: clamp((0.62 * d2 + 7) / 28, 0.25, 1), altura: 0 }) };
+    }
+
+    // 3) Sin presión: conducir
+    if (presion > 4.5) return { ir: regatear(p) };
+
+    // 4) Presionado y sin pase: despejar
+    if (p.x < 40) {
+      var cy = p.y < GY ? 3 : W - 3;
+      return { patear: fix({ x: Math.min(p.x + 35, L - 5), y: cy, fuerza: 1, altura: 0.4 }) };
+    }
+    return { patear: fix({ x: Math.min(p.x + 25, L - 5), y: GY, fuerza: 0.9, altura: 0.6 }) };
+  }
+
+  var ordenes = new Array(11);
+
+  // ---- ARQUERO ----
+  (function () {
+    var k = mios[0];
+    var dBG = Math.hypot(b.x, b.y - GY) || 1;
+    var r = Math.min(4.5, Math.max(1.5, dBG - 1));
+    var kx = Math.max(1, r * b.x / dBG);
+    var ky = clamp(GY + r * (b.y - GY) / dBG, GY - 3.6, GY + 3.6);
+
+    if (b.vx < -4 && b.x < 45) {
+      var t = (b.x - 1.5) / (-b.vx);
+      var yc = b.y + b.vy * t;
+      if (Math.abs(yc - GY) < 7) { ky = clamp(yc, GY - 5, GY + 5); kx = 1.5; }
+    }
+
+    var inArea = b.x < C.areaX - 0.5 && Math.abs(b.y - GY) < C.areaY / 2 - 0.5;
+    var bSpeed = Math.hypot(b.vx, b.vy);
+    var dk = dist(k, b);
+    var minR = minRivDist(b.x, b.y);
+    var ir = { x: kx, y: ky };
+    if (inArea && bSpeed < 9 && dk < minR + 1) ir = { x: b.x, y: b.y };
+
+    var o = { ir: ir };
+    if (inArea && dk <= 2.2 && b.z <= 2.8) {
+      var cy = b.y < GY ? 6 : W - 6;
+      o.patear = fix({ x: 50, y: cy, fuerza: 0.9, altura: 0.35 });
+    }
+    ordenes[0] = o;
+  })();
+
+  // ---- JUGADORES DE CAMPO ----
+  for (i = 1; i < 11; i++) {
+    var p = mios[i];
+    var dBall = dist(p, b);
+    var ir;
+
+    if (chasers[i]) {
+      ir = objetivoBalon(p);
+    } else {
+      var baseY = [34, 8, 26, 42, 60, 6, 26, 42, 62, 26, 42][i];
+      var x, y;
+      if (i <= 4) {
+        x = clamp(b.x * 0.5 + 8 + (poss ? 6 : 0) + late, 16, 62);
+        y = baseY * 0.65 + b.y * 0.35;
+      } else if (i <= 8) {
+        x = clamp(b.x * 0.6 + 16 + (poss ? 8 : 0) + late, 30, 82);
+        y = baseY * 0.65 + b.y * 0.35;
+      } else {
+        x = clamp(b.x * 0.5 + 36 + (poss ? 10 : 0) + late, 50, 96);
+        y = baseY * 0.65 + b.y * 0.35;
+        if (poss) {
+          x = clamp(Math.max(x, b.x + 5), 50, 98);
+          if (b.x > 60) y = (i === 9) ? 28 : 40;
+        }
+      }
+      ir = { x: clamp(x, 0.5, L - 0.5), y: clamp(y, 0.5, W - 0.5) };
+    }
+
+    var o = { ir: ir };
+    if (dBall <= 1.3 && b.z <= 2.4) {
+      var dec = decidirConBalon(p, i);
+      if (dec.patear) o.patear = dec.patear;
+      if (dec.ir) o.ir = dec.ir;
+    }
+    ordenes[i] = o;
+  }
+
+  return ordenes;
+}
+
+Las reglas del simulador no cambiaron. Te las repito completas:
+
+Lo que tienes que entregar: un solo bloque de código JavaScript que defina la función decidir(estado). El simulador la llama 10 veces por segundo y tú devuelves una lista con 11 órdenes, una por jugador (la posición 0 de la lista es el arquero, la 10 es el último delantero).
+
+Lo que recibes en "estado":
+- estado.tiempo (segundos jugados), estado.duracion (360), estado.mitad (1 o 2; 3 en el tiempo extra)
+- estado.marcador.propio y estado.marcador.rival
+- estado.balon = { x, y, z, vx, vy, vz } (z es la altura del balón en metros; 0 = en el piso)
+- estado.mios = lista de tus 11 jugadores: { n, x, y, vx, vy } (n va de 0 a 10; el 0 es el arquero)
+- estado.rivales = lista de los 11 rivales, con el mismo formato
+- estado.saque = "propio", "rival" o null (durante un saque el rival no puede acercarse a menos de 7 metros)
+- estado.cancha = { largo: 105, ancho: 68, arco: 7.32, areaX: 16.5, areaY: 40.32, alcance: 1.3, velJugador: 7.5, velPateo: 28, alturaArco: 2.44, alturaJugador: 2.4 }
+
+La cancha: mide 105 por 68 metros. TU arco siempre está en x = 0 y SIEMPRE atacas hacia x = 105 (el simulador voltea la cancha por ti, también en el segundo tiempo). El centro de cada arco está en y = 34 y mide 7,32 metros de ancho.
+
+Cada orden es un objeto: { ir: { x, y }, patear: { x, y, fuerza, altura } }
+- "ir": el punto hacia donde corre ese jugador (máximo 7,5 metros por segundo).
+- "patear" (opcional): si el balón está a menos de 1,3 metros del jugador, lo patea hacia ese punto. "fuerza" va de 0.05 a 1; con fuerza 1 el balón sale a 28 metros por segundo y se va frenando (recorre unos 45 metros). Más fuerza = menos puntería.
+- "altura" (opcional, de 0 a 1): con 0 el balón sale raso; con 1 sale hacia arriba a 12 metros por segundo (sube unos 7 metros y tarda unos 2,4 segundos en caer). Sirve para centros, pases largos y globos. En el aire el balón casi no se frena y pasa por encima de los jugadores; al caer, rebota.
+- Juego aéreo: un jugador alcanza el balón si está a 2,4 metros de altura o menos (el arquero, a 2,8 dentro de su área). Si lo patea cuando está a más de 1,3 metros de altura es un cabezazo (fuerza máxima 0.6); entre 0,4 y 1,3 metros es una volea, o una chilena si la fuerza pasa de 0.7. De cabeza, de volea y de chilena hay menos puntería.
+- Si un jugador toca el balón y NO le das "patear", lo baja, lo controla y lo lleva pegado al pie, pero corre un 15 % más lento que los demás.
+- El arquero (el 0) alcanza el balón a 2,2 metros dentro de su área y, si no le das "patear", lo detiene. Pero los tiros fuertes se le pueden escapar: si el balón le llega a 12 metros por segundo o menos lo alcanza siempre; más rápido puede fallar (hasta 4 de cada 10 veces cuando llega a 24 metros por segundo o más).
+
+Reglas del simulador: dos tiempos de 3 minutos. Es gol si el balón cruza la línea entre los palos y por debajo del travesaño (2,44 metros). No hay faltas, fuera de juego ni cansancio. Los jugadores no se atraviesan. Si el balón sale, saca el otro equipo (banda, arco o esquina). Después de un gol saca el equipo que lo recibió. Los equipos salen formados en 4-4-2. Formato del torneo: primero todos contra todos, un partido contra cada rival; los cuatro mejores pasan a semifinales y los ganadores juegan la final. Si una semifinal o la final termina empatada hay un tiempo extra de 2 minutos con gol de oro (ahí estado.mitad vale 3 y estado.tiempo sigue contando después de 360).
+
+Condiciones: el código corre aislado, así que no puedes usar window, document, internet ni librerías; solo JavaScript normal y Math. Puedes guardar variables fuera de la función para recordar cosas entre llamadas. Si tu función falla o tarda más de 20 milisegundos, tus jugadores pierden ese turno.
+
+Dame: 1) el nombre de tu equipo (puedes conservarlo), 2) qué cambiaste y por qué, en una sola frase, y 3) el código completo en un solo bloque, listo para copiar y pegar, sin que yo tenga que cambiar nada a mano.
